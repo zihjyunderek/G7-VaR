@@ -1,0 +1,9 @@
+# The earlier run of 2026-05-04, behind Table 5-7 only: HS on 500 days ending at r_{t-1},
+# RiskMetrics as an EWMA recursion. Everything else is config.yaml.
+# Use: G7VAR_CONFIG=config_2026-05-04.yaml python scripts/01_forecasts.py --runs main_1W
+hs:
+  window: 500
+  window_end: exclusive
+riskmetrics:
+  method: ewma
+results_tag: "2026-05-04"

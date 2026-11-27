@@ -1,0 +1,18 @@
+cff-version: 1.2.0
+message: "If you use this code, please cite the thesis."
+title: "G7-VaR: code and results of 'Forecasting FX Spot Value-at-Risk (VaR) Using Implied Volatility: Evidence from G7 Currency Pairs'"
+authors:
+  - family-names: Huang
+    given-names: Zih Jyun
+license: BSD-3-Clause
+repository-code: "https://github.com/zihjyunderek/G7-VaR"
+preferred-citation:
+  type: thesis
+  thesis-type: "Master's thesis"
+  title: "Forecasting FX Spot Value-at-Risk (VaR) Using Implied Volatility: Evidence from G7 Currency Pairs"
+  authors:
+    - family-names: Huang
+      given-names: Zih Jyun
+  institution:
+    name: "National Chengchi University, Department of Money and Banking"
+  year: 2026

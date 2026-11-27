@@ -1,0 +1,110 @@
+# G7-VaR: every setting of the thesis pipeline. Paths are relative to the repository root.
+
+data:
+  spot_file: data/raw/old/G7_Spot.xlsx      # Bloomberg spot rates, one sheet per pair
+  option_dir: data/raw/new                  # <code>.xlsx per pair; sheet <code><metric><tenor> Curncy
+  global_file: data/raw/new/Global.xlsx     # sheet "OVX Index"
+
+pairs:                                      # pair: [Bloomberg code, spot sheet]
+  EUR/USD: [EURUSD, EURUSD BGN Curncy]
+  GBP/USD: [GBPUSD, GBPUSD Curncy]
+  USD/JPY: [USDJPY, USDJPY Curncy]
+  USD/CAD: [USDCAD, USDCAD Curncy]
+  AUD/USD: [AUDUSD, AUDUSD Curncy]
+  USD/CHF: [USDCHF, USDCHF Curncy]
+  USD/TWD: [USDTWD, USDTWD Curncy]
+
+features:                                   # implied-volatility feature: Bloomberg metric
+  ATM: V
+  RR25: 25R
+  BF25: 25B
+  RR10: 10R
+  BF10: 10B
+
+sample:                                     # section 3.1
+  train_start: "2009-01-01"
+  train_end: "2019-12-31"
+  test_start: "2020-01-01"
+  test_end: "2025-12-31"
+
+quantiles: [0.01, 0.025, 0.05]
+
+backtest:                                   # section 4.5
+  dq_lags: 4
+  basel_window: 250
+
+hs:                                         # historical simulation, section 4.1
+  window: 250
+  window_end: inclusive                     # inclusive: the window ends at r_t; exclusive: at r_{t-1}
+
+riskmetrics:
+  method: rolling                           # rolling: 250-day standard deviation; ewma: lambda recursion
+  window: 250
+  lambda: 0.94
+  seed_window: 30
+
+qrim:                                       # section 4.2
+  max_iter: 3000
+  vcov: iid
+
+random_forest:                              # section 4.3
+  n_estimators: 500
+  random_state: 42
+xgboost:
+  max_depth: 6
+  n_estimators: 300
+  learning_rate: 0.05
+  subsample: 0.8
+  colsample_bytree: 0.8
+  random_state: 42
+lightgbm:
+  num_leaves: 31
+  learning_rate: 0.05
+  feature_fraction: 0.8
+  bagging_fraction: 0.8
+  bagging_freq: 5
+  verbosity: -1
+  seed: 42
+  num_boost_round: 300
+catboost:
+  iterations: 500
+  learning_rate: 0.03
+  depth: 6
+  random_seed: 42
+
+deep:                                       # section 4.4
+  batch_size: 32
+  max_epochs: 120
+  patience: 15
+  learning_rate: 0.001
+  train_split: 0.80                         # the last 20% of the training sample stops training early
+  dropout: 0.2
+  hidden_size: 12
+  rnn_hidden: 8
+  seed: 42
+  monotonic_epsilon: 1.0e-3
+  spread_penalty_lambda: 0.10
+  spread_penalty_min: 5.0e-4
+
+# The runs. Defaults: tenor 1W, features ATM and RR25, every model, the sample above.
+# baselines: false leaves out HS, RiskMetrics, GJR-GARCH and FHS-GARCH (their forecasts do not use options).
+runs:
+  main_1W: {}                                                     # chapter 5
+  r1_BF25: {features: [ATM, RR25, BF25]}                          # 6.1 feature specification
+  r1_RR10_BF25: {features: [ATM, RR25, RR10, BF25]}
+  r1_RR10: {features: [ATM, RR10]}
+  r1_All: {features: [ATM, RR25, RR10, BF25, BF10]}
+  r1_BF25_BF10: {features: [ATM, RR25, BF25, BF10]}
+  r1_RR10_BF10: {features: [ATM, RR10, BF10]}
+  r2_2W: {tenor: 2W, baselines: false}                            # 6.2 option tenor
+  r2_1M: {tenor: 1M, baselines: false}
+  r2_ON: {tenor: "ON", baselines: false}
+  r2_3M: {tenor: 3M, baselines: false}
+  r2_6M: {tenor: 6M, baselines: false}
+  r2_1Y: {tenor: 1Y, baselines: false}
+  r2_3Y: {tenor: 3Y, baselines: false}
+  r3_covid: {test: ["2020-01-01", "2021-12-31"], baselines: false}       # 6.3 subsamples
+  r3_ratehike: {test: ["2022-01-01", "2025-12-31"], baselines: false}
+  r4_OVX_USDCAD: {extra: {USD/CAD: [OVX]}}                        # 6.4 oil volatility for USD/CAD
+  r5_ImpliedSpread: {features: [ATM, RR25, Implied_Bid_Ask_Spread]}   # 6.5 option liquidity
+  r0_replication: {train_end: "2017-12-31", test: ["2018-01-01", "2020-09-25"]}   # sample of de Lange et al. (2022) and Blom et al. (2023)

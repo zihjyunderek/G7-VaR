@@ -1,0 +1,14 @@
+Model,EUR/USD,GBP/USD,USD/JPY,USD/CAD,AUD/USD,USD/CHF,USD/TWD
+HS,Green,Green,Green,Green,Green,Green,Yellow
+RiskMetrics,Green,Green,Green,Yellow,Green,Green,Yellow
+GJR-GARCH,Green,Green,Green,Green,Green,Green,Green
+FHS-GARCH,Green,Green,Green,Green,Green,Green,Yellow
+FHS-IV,Green,Green,Yellow,Green,Green,Green,Yellow
+QR-IM,Green,Green,Green,Green,Green,Green,Green
+RandomForest,Green,Green,Green,Green,Green,Green,Green
+XGBoost,Green,Green,Green,Green,Green,Green,Green
+LightGBM,Green,Green,Green,Green,Green,Green,Green
+CatBoost,Green,Green,Green,Green,Green,Green,Green
+FFNN,Green,Green,Yellow,Red,Green,Yellow,Red
+RNN,Green,Yellow,Yellow,Green,Green,Yellow,Red
+LSTM,Green,Green,Yellow,Green,Green,Yellow,Yellow

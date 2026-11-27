@@ -1,0 +1,725 @@
+% !TeX root = ../main.tex
+% ───────────────────────────
+\chapter{穩健性測試}
+\label{chap:robustness}
+% ───────────────────────────
+
+本章以變動特徵、更換天期、子樣本分析共 3 個維度進行測試與驗證，以確保實證結果的穩健性。
+
+% ───────────────────────────
+\section{變動特徵}
+\label{sec:r_feature}
+% ───────────────────────────
+
+本節依序檢視特徵變數的替換與擴充對模型預測能力的邊際影響，包含以 10-delta 風險逆轉（RR10）替換基準的 RR25、新增 25-delta 蝶式價差（BF25）、納入完整波動率表面，以及針對 USD/CAD 加入原油波動率指數（OVX）與隱含買賣價差作為流動性代理變數。
+
+\subsection{選擇權隱含波動率}
+\label{subsec:r1}
+
+表~\ref{tab:rr10_coef} 呈現以 RR10 完全取代 RR25 的迴歸結果。ATM IV 係數在全數 21 個分位數與幣別組合中均維持高度顯著的負向關係（$p < .01$），確認了基準特徵的強健性。RR10 係數在多數幣別與主要實證結果方向一致，尤其是 GBP/USD 在 1\% 分位數的係數（$+0.275$）強烈反映了脫歐後英鎊對深度偏態資訊的敏感性。然而，USD/CAD 的 RR10 係數在三個分位數仍全數不顯著，確認了加幣尾部風險與外匯偏態訊號呈現結構性解耦。
+
+在表~\ref{tab:bf25_coef} 新增 25-delta 蝶式價差的測試結果中，僅 GBP/USD 呈現系統性顯著，多數幣別加入 BF25 後反而導致回測指標惡化（如 EUR/USD 與 USD/CHF 的突破比率上升）。
+
+而在表~\ref{tab:all_breach} 進一步將特徵擴充至完整的波動率表面後，模型出現明顯的特徵飽和現象，特徵間的高度共線性壓縮了各別變數的統計顯著性，且在突破比率層次並未帶來全幣別的系統性改善。此結果確認了基準模型採用 ATM IV 與 RR25 特徵的簡單設定，已能在避免過擬合的前提下捕捉充足的尾部資訊。
+
+% ──────────────────────────────────
+% Table 6-1
+% ──────────────────────────────────
+\begin{table}[htbp]
+    \centering
+    \linespread{1.2}\selectfont
+    \renewcommand{\arraystretch}{1.2}
+    \fontsize{8pt}{11pt}\selectfont
+    \vspace{3mm}
+    \caption{以 10-delta RR 替代後的 QR-IM 迴歸係數結果}
+    \label{tab:rr10_coef}
+    \resizebox{\textwidth}{!}{%
+    \begin{tabular}{llccccccc}
+        \hline
+        & & \textbf{EUR/USD} & \textbf{GBP/USD} & \textbf{USD/JPY}
+        & \textbf{USD/CAD} & \textbf{AUD/USD} & \textbf{USD/CHF} & \textbf{USD/TWD} \\
+        \hline
+        \multirow{3}{*}{\textit{ATM IV}}
+          & $\hat\beta^{\mathrm{ATM\,IV}}_{1\%}$
+            & $-0.111^{\ ***}$
+            & $-0.101^{\ ***}$
+            & $-0.119^{\ ***}$
+            & $-0.123^{\ ***}$
+            & $-0.119^{\ ***}$
+            & $-0.165^{\ ***}$
+            & $-0.149^{\ ***}$ \\
+          & $\hat\beta^{\mathrm{ATM\,IV}}_{2.5\%}$
+            & $-0.093^{\ ***}$
+            & $-0.076^{\ ***}$
+            & $-0.094^{\ ***}$
+            & $-0.108^{\ ***}$
+            & $-0.109^{\ ***}$
+            & $-0.114^{\ ***}$
+            & $-0.105^{\ ***}$ \\
+          & $\hat\beta^{\mathrm{ATM\,IV}}_{5\%}$
+            & $-0.082^{\ ***}$
+            & $-0.077^{\ ***}$
+            & $-0.070^{\ ***}$
+            & $-0.093^{\ ***}$
+            & $-0.089^{\ ***}$
+            & $-0.084^{\ ***}$
+            & $-0.083^{\ ***}$ \\
+        \hline
+        \multirow{3}{*}{\textit{RR10}}
+          & $\hat\beta^{\mathrm{RR10}}_{1\%}$
+            & $\phantom{-}0.101^{\ ***}$
+            & $\phantom{-}0.275^{\ ***}$
+            & $\phantom{-}0.055^{\ \phantom{***}}$
+            & $-0.024^{\ \phantom{***}}$
+            & $\phantom{-}0.095^{\ **\phantom{*}}$
+            & $\phantom{-}0.087^{\ **\phantom{*}}$
+            & $\phantom{-}0.135^{\ ***}$ \\
+          & $\hat\beta^{\mathrm{RR10}}_{2.5\%}$
+            & $\phantom{-}0.117^{\ ***}$
+            & $\phantom{-}0.229^{\ ***}$
+            & $\phantom{-}0.043^{\ *\phantom{**}}$
+            & $\phantom{-}0.020^{\ \phantom{***}}$
+            & $\phantom{-}0.092^{\ ***}$
+            & $\phantom{-}0.080^{\ **\phantom{*}}$
+            & $\phantom{-}0.106^{\ ***}$ \\
+          & $\hat\beta^{\mathrm{RR10}}_{5\%}$
+            & $\phantom{-}0.058^{\ ***}$
+            & $\phantom{-}0.109^{\ ***}$
+            & $\phantom{-}0.026^{\ \phantom{***}}$
+            & $-0.018^{\ \phantom{***}}$
+            & $\phantom{-}0.075^{\ ***}$
+            & $\phantom{-}0.052^{\ **\phantom{*}}$
+            & $\phantom{-}0.062^{\ ***}$ \\
+        \hline
+    \end{tabular}
+    }
+ 
+    \vspace{3mm}
+ 
+    \begin{minipage}{\textwidth}
+        \fontsize{9pt}{13pt}\selectfont
+        \textit{Note.} 變數為 ATM IV $+$ RR10。係數已乘以 100。$N = 1{,}565$（USD/TWD 為 $N = 1{,}470$）。$^{***}$、$^{**}$、$^{*}$ 分別代表在 1\%、5\%、10\% 顯著水準下拒絕係數為零之虛無假設；空白表示未達 10\% 顯著水準。截距項含於模型但未列於表中。資料來源：本研究計算。
+    \end{minipage}
+\end{table}
+% ──────────────────────────────────
+
+% ──────────────────────────────────
+\begin{table}[htbp]
+    \centering
+    \linespread{1.2}\selectfont
+    \renewcommand{\arraystretch}{1.2}
+    \fontsize{8pt}{11pt}\selectfont
+    \vspace{3mm}
+    \caption{新增蝶式價差的迴歸係數 Wald 檢定結果}
+    \label{tab:bf25_coef}
+    \resizebox{\textwidth}{!}{%
+    \begin{tabular}{lccccccc}
+        \hline
+        \textbf{分位數} & \textbf{EUR/USD} & \textbf{GBP/USD} & \textbf{USD/JPY}
+        & \textbf{USD/CAD} & \textbf{AUD/USD} & \textbf{USD/CHF} & \textbf{USD/TWD} \\
+        \hline
+        $1\%$   & .911 & .000*** & .377 & .736 & .718 & .204 & .293 \\
+        $2.5\%$ & .260 & .000*** & .287 & .094* & .970 & .138 & .330 \\
+        $5\%$   & .880 & .000*** & .322 & .519 & .894 & .243 & .356 \\
+        \hline
+    \end{tabular}
+    }
+    
+    \vspace{3mm}
+    
+    \begin{minipage}{\textwidth}
+        \fontsize{9pt}{13pt}\selectfont
+        \textit{Note.} 表中數值為 BF25 係數的 Wald 檢定 $p$ 值。
+        $^{***}$、$^{**}$、$^{*}$ 分別代表在 1\%、5\%、10\% 顯著水準下拒絕係數為零之虛無假設。
+        ATM IV 係數在全部幣別維持 $^{***}$ 顯著；RR25 顯著性模式與主要實證結果大致一致，兩者均未列於表中。
+    \end{minipage}
+\end{table}
+% ──────────────────────────────────
+
+% % ──────────────────────────────
+% Table 6-3
+% ──────────────────────────────
+\begin{table}[htbp]
+    \centering
+    \linespread{1.2}\selectfont
+    \renewcommand{\arraystretch}{1.2}
+    \fontsize{8pt}{11pt}\selectfont
+    \vspace{3mm}
+    \caption{主要模型在 5 個波動率特徵下的 1\% VaR 突破比率與評級}
+    \label{tab:all_breach}
+    \resizebox{\textwidth}{!}{%
+    \begin{tabular}{lcccccccl}
+        \hline
+        \textbf{模型} & \textbf{EUR/USD} & \textbf{GBP/USD} & \textbf{USD/JPY}
+        & \textbf{USD/CAD} & \textbf{AUD/USD} & \textbf{USD/CHF} & \textbf{USD/TWD}
+        & \textbf{Basel} \\
+        \hline
+        FHS-IV        & 1.79 & 1.53 & 1.66 & 1.34 & 1.92 & 1.60 & 1.50 & 5/7\,G \\
+        QR-IM         & 1.21 & 2.04\textsuperscript{$\ddagger$}
+                      & 1.21 & 1.34 & 1.41 & 1.98 & 0.68 & 6/7\,G \\
+        RandomForest  & 0.83 & 1.15 & 0.83 & 1.02 & 1.09 & 1.02 & 0.54 & 7/7\,G \\
+        XGBoost       & 0.58 & 1.53 & 0.70 & 0.45 & 0.58 & 0.83 & 0.20 & 7/7\,G \\
+        \textbf{LightGBM} & \textbf{0.89} & \textbf{1.34} & \textbf{0.58}
+                      & \textbf{0.89} & \textbf{1.02} & \textbf{1.09} & \textbf{0.41}
+                      & 7/7\,G \\
+        CatBoost      & 1.09 & 1.21 & 0.83 & 0.51 & 0.96 & 1.21 & 0.27 & 6/7\,G \\
+        FFNN          & 1.28
+                      & 3.83\textsuperscript{$\ddagger$}
+                      & 2.62\textsuperscript{$\ddagger$}
+                      & 6.01\textsuperscript{$\ddagger$}
+                      & 1.98
+                      & 2.43\textsuperscript{$\ddagger$}
+                      & 8.10\textsuperscript{$\ddagger$}
+                      & 3/7\,G \\
+        RNN           & 1.73
+                      & 3.45\textsuperscript{$\ddagger$}
+                      & 3.00\textsuperscript{$\ddagger$}
+                      & 1.98
+                      & 2.56\textsuperscript{$\ddagger$}
+                      & 2.43\textsuperscript{$\ddagger$}
+                      & 2.52\textsuperscript{$\ddagger$}
+                      & 3/7\,G \\
+        LSTM          & 1.21
+                      & 2.43\textsuperscript{$\ddagger$}
+                      & 1.85 & 1.02 & 1.47 & 1.73 & 1.90 & 4/7\,G \\
+        \hline
+        \textit{名義水準} & 1.00 & 1.00 & 1.00 & 1.00 & 1.00 & 1.00 & 1.00 & \\
+        \hline
+    \end{tabular}
+    }
+
+    \vspace{2mm}
+
+    \begin{minipage}{\textwidth}
+        \fontsize{9pt}{13pt}\selectfont
+        \textit{Note.} 規格為 ATM IV $+$ RR25 $+$ BF25 $+$ RR10 $+$ BF10。%
+        $N = 1{,}565$（USD/TWD 為 $N = 1{,}470$）。%
+        G 表示巴塞爾綠色評級（最後 250 交易日）；Basel 欄為綠色評級幣別數。%
+        \textsuperscript{$\ddagger$} 表示突破比率超過 2\%。%
+        \textbf{粗體}標示集成學習最佳模型（LightGBM，全幣別 7/7\,Green）。%
+        深度學習模型（FFNN、RNN、LSTM）突破比率與主要實證結果完全相同，%
+        不受特徵規格替換影響。%
+        傳統計量基準（HS、RiskMetrics、GJR-GARCH、FHS-GARCH）同樣不變，%
+        已省略。資料來源：本研究計算。
+    \end{minipage}
+\end{table}
+% ──────────────────────────────
+
+\subsection{原油波動率}
+\label{subsec:r4_ovx}
+
+針對 USD/CAD 特殊的解耦現象，表~\ref{tab:r4_coef} 揭露了引入 CBOE 原油波動率指數（OVX）的分析結果。
+
+雖然 OVX 係數方向符合理論預期，且加入後顯著改善了 1\% 突破比率（由 1.53\% 降至 0.83\%），但其統計顯著性僅在 5\% 分位數達邊際顯著（$p = .053$）。這表明短期選擇權框架下，OVX 的統計貢獻尚不足以將其納入全幣別的標準特徵，但印證了商品貨幣尾部風險的獨特傳導路徑。
+
+% ──────────────────────────────────────
+\begin{table}[htbp]
+    \centering
+    \linespread{1.2}\selectfont
+    \renewcommand{\arraystretch}{1.2}
+    \fontsize{11pt}{15pt}\selectfont
+    \vspace{3mm}
+    \caption{USD/CAD 新增 OVX 的 QR-IM 迴歸係數結果}
+    \label{tab:r4_coef}
+    \begin{tabular}{lccccccc}
+        \hline
+        & \multicolumn{2}{c}{\textbf{ATM IV}} & \multicolumn{2}{c}{\textbf{RR25}}
+        & \multicolumn{2}{c}{\textbf{OVX}} \\
+        \cmidrule(lr){2-3}\cmidrule(lr){4-5}\cmidrule(lr){6-7}
+        \textbf{分位數} & 係數 & Sig. & 係數 & Sig. & 係數 & Sig. \\
+        \hline
+        $1\%$   & $-0.103$ & *** & $-0.045$ & — & $-0.0064$ & — \\
+        $2.5\%$ & $-0.099$ & *** & $-0.005$ & — & $-0.0034$ & — \\
+        $5\%$   & $-0.080$ & *** & $-0.038$ & — & $-0.0041$ & * \\
+        \hline
+    \end{tabular}
+    
+    \vspace{3mm}
+    
+    \begin{minipage}{0.75\textwidth}
+        \fontsize{9pt}{13pt}\selectfont
+        \textit{Note.} OVX 係數已乘以 100，並使用四位小數以呈現完整精度。「—」表示未達 10\% 顯著水準。$^{***}$、$^{*}$ 分別代表在 1\%、10\% 顯著水準下拒絕係數為零之虛無假設。資料來源：本研究計算。
+    \end{minipage}
+\end{table}
+% ──────────────────────────────────────
+
+\subsection{隱含買賣價差}
+
+另一方面，為捕捉 OTC 外匯市場在極端衝擊下的流動性枯竭風險，本節進一步引入隱含買賣價差（Implied Bid-Ask Spread）作為流動性代理變數，以捕捉極端衝擊事件下，買賣價差擴大而導致壓力期間系統性低估的尾部損失。隱含買賣價差定義為選擇權賣價與買價隱含波動率之差額（$\mathrm{Spread}_t = \mathrm{IV}_{t}^{\mathrm{Ask}} - \mathrm{IV}_{t}^{\mathrm{Bid}}$）。將其標準化後，分位數迴歸之擴展模型可表示為：
+\begin{equation}
+    \widehat{Q}_{q,t}^{\mathrm{Spread}}
+    = 
+    \beta_0 + 
+    \beta_1 \mathrm{ATM\,IV}_t + 
+    \beta_2 \mathrm{RR25}_{t} + 
+    \beta_3 \mathrm{Spread}_t + 
+    \varepsilon_t
+    \label{eq:r5_spec}
+\end{equation}
+在經濟直覺上，$\beta_3$ 的預期符號應為負值，即買賣價差擴大（流動性惡化）將放大尾部下行風險。
+
+表~\ref{tab:r5_coef} 的結果證實了此一預期，但揭示流動性效應具備高度的幣別異質性。流動性枯竭對尾部風險的放大作用集中於高頻受壓或具避險屬性的幣別（如 GBP/USD 與 USD/JPY 的 $\beta_3$ 顯著為負），而 EUR/USD 等具備深水流動性的市場則不顯著。此發現確認了流動性特徵的增量貢獻並非跨市場普遍存在，而是取決於該幣別在極端情境下的微觀結構韌性。
+
+% ───────────────────────────────────
+\begin{table}[htbp]
+    \centering
+    \linespread{1.2}\selectfont
+    \renewcommand{\arraystretch}{1.2}
+    \fontsize{11pt}{15pt}\selectfont
+    \vspace{3mm}
+    \caption{新增隱含買賣價差下的各幣別 QR-IM 迴歸係數比較結果}
+    \label{tab:r5_coef}
+    \begin{tabular}{lcccccc}
+        \hline
+        \textbf{幣別}
+        & \multicolumn{2}{c}{\textbf{1\%}}
+        & \multicolumn{2}{c}{\textbf{2.5\%}}
+        & \multicolumn{2}{c}{\textbf{5\%}} \\
+        \cmidrule(lr){2-3}\cmidrule(lr){4-5}\cmidrule(lr){6-7}
+        & 係數 & Sig. & 係數 & Sig. & 係數 & Sig. \\
+        \hline
+        EUR/USD & $+0.103$ & —   & $+0.123$ & —   & $+0.036$ & —   \\
+        GBP/USD & $-0.236$ & *** & $-0.075$ & **  & $+0.011$ & —   \\
+        USD/JPY & $-0.513$ & *** & $-0.487$ & *** & $-0.160$ & *   \\
+        USD/CAD & $-0.040$ & —   & $+0.059$ & —   & $+0.025$ & —   \\
+        AUD/USD & $-0.150$ & —   & $+0.028$ & —   & $+0.112$ & —   \\
+        USD/CHF & $-0.126$ & **  & $+0.006$ & —   & $-0.044$ & —   \\
+        USD/TWD & $-0.072$ & —   & $-0.038$ & —   & $-0.028$ & —   \\
+        \hline
+    \end{tabular}
+    
+    \vspace{3mm}
+    
+    \begin{minipage}{0.77\textwidth}
+        \fontsize{9pt}{13pt}\selectfont
+        \textit{Note.} 係數已乘以 100。「—」表示未達 10\% 顯著水準。$^{***}$、$^{**}$、$^{*}$ 分別代表在 1\%、5\%、10\% 顯著水準下拒絕係數為零之虛無假設。資料來源：本研究計算。
+    \end{minipage}
+\end{table}
+% ───────────────────────────────────
+
+% ───────────────────────────────────
+\section{更換天期}
+\label{subsec:r2}
+% ───────────────────────────────────
+本節以 6 個月（6M）、1 年（1Y）、3 年（3Y）三個中長天期取代基準的 1 週天期，系統評估選擇權期限結構對短期 VaR 預測效能的干擾。由於傳統計量基準模型不依賴選擇權天期特徵，其突破比率不受影響，故不納入本節比較。
+
+% ───────────────────────────
+\begin{table}[htbp]
+    \centering
+    \linespread{1.2}\selectfont
+    \renewcommand{\arraystretch}{1.2}
+    \fontsize{8pt}{11pt}\selectfont
+    \vspace{3mm}
+    \caption{不同天期下的 1\% 信心水準各幣別預測績效比較}
+    \label{tab:tenor_comparison}
+    \resizebox{\textwidth}{!}{%
+    \begin{tabular}{llccccccc}
+        \hline
+        \textbf{天期} & \textbf{模型}
+        & \textbf{EUR/USD} & \textbf{GBP/USD} & \textbf{USD/JPY}
+        & \textbf{USD/CAD} & \textbf{AUD/USD} & \textbf{USD/CHF} & \textbf{USD/TWD} \\
+        \hline
+        \multirow{5}{*}{1W}
+          & FHS-IV
+            & 1.79 & 1.53 & 1.66 & 1.34 & 1.92 & 1.60 & 1.50 \\
+          & QR-IM
+            & 1.47 & 1.53 & 1.15 & 1.53 & 1.28 & 1.21 & 0.54 \\
+          & \textbf{LightGBM}
+            & \textbf{0.77} & \textbf{0.89} & \textbf{0.70} & \textbf{0.51}
+            & \textbf{0.83} & \textbf{0.70} & \textbf{0.27} \\
+          & CatBoost
+            & 0.89 & 1.15 & 0.77 & 1.09 & 0.96 & 0.96 & 0.54 \\
+          & RF
+            & 0.96 & 1.41 & 1.02 & 1.41 & 1.15 & 1.15 & 0.54 \\
+        \hline
+        \multirow{5}{*}{6M}
+          & FHS-IV
+            & 1.60 & 1.60 & 1.47 & 1.53 & 1.60 & 1.60 & 1.36 \\
+          & QR-IM
+            & 1.47
+            & 2.04\textsuperscript{$\ddagger$}
+            & 2.04\textsuperscript{$\ddagger$}
+            & 1.66 & 1.60 & 1.85 & 0.41 \\
+          & \textbf{LightGBM}
+            & \textbf{0.96} & \textbf{1.47} & \textbf{1.41} & \textbf{1.02}
+            & \textbf{1.02} & \textbf{0.51} & \textbf{0.41} \\
+          & CatBoost
+            & 1.21 & 1.73 & 1.73 & 1.21 & 1.41 & 1.41 & 0.41 \\
+          & RF
+            & 1.41 & 1.98
+            & 2.11\textsuperscript{$\ddagger$}
+            & 1.60 & 1.53 & 1.85 & 0.41 \\
+        \hline
+        \multirow{5}{*}{1Y}
+          & FHS-IV
+            & 1.41 & 1.34 & 1.53 & 1.47 & 1.53 & 1.53 & 1.36 \\
+          & QR-IM
+            & 1.66
+            & 2.04\textsuperscript{$\ddagger$}
+            & 2.30\textsuperscript{$\ddagger$}
+            & 2.04\textsuperscript{$\ddagger$}
+            & 1.47
+            & 2.11\textsuperscript{$\ddagger$}
+            & 0.48 \\
+          & \textbf{LightGBM}
+            & \textbf{0.83} & \textbf{1.66} & \textbf{1.53} & \textbf{0.96}
+            & \textbf{1.15} & \textbf{0.58} & \textbf{0.48} \\
+          & CatBoost
+            & 1.34 & 1.85
+            & 2.11\textsuperscript{$\ddagger$}
+            & 1.41 & 1.21 & 1.53 & 0.34 \\
+          & RF
+            & 1.41
+            & 2.04\textsuperscript{$\ddagger$}
+            & 2.24\textsuperscript{$\ddagger$}
+            & 1.73 & 1.41
+            & 2.04\textsuperscript{$\ddagger$}
+            & 0.48 \\
+        \hline
+        \multirow{5}{*}{3Y}
+          & FHS-IV
+            & 1.47 & 1.41 & 1.66 & 1.53 & 1.53 & 1.60 & 1.36 \\
+          & QR-IM
+            & 1.60 & 1.79
+            & 2.17\textsuperscript{$\ddagger$}
+            & 2.11\textsuperscript{$\ddagger$}
+            & 2.49\textsuperscript{$\ddagger$}
+            & 2.49\textsuperscript{$\ddagger$}
+            & 0.75 \\
+          & \textbf{LightGBM}
+            & \textbf{0.58} & \textbf{1.02} & \textbf{1.60} & \textbf{1.02}
+            & \textbf{1.53} & \textbf{1.02} & \textbf{0.34} \\
+          & CatBoost
+            & 1.41 & 1.34
+            & 2.04\textsuperscript{$\ddagger$}
+            & 1.60 & 1.79 & 1.66 & 0.41 \\
+          & RF
+            & 1.34 & 1.73
+            & 2.17\textsuperscript{$\ddagger$}
+            & 1.92
+            & 2.24\textsuperscript{$\ddagger$}
+            & 2.30\textsuperscript{$\ddagger$}
+            & 0.54 \\
+        \hline
+        \multicolumn{2}{l}{\textit{名義水準}}
+          & 1.00 & 1.00 & 1.00 & 1.00 & 1.00 & 1.00 & 1.00 \\
+        \hline
+    \end{tabular}}
+ 
+    \vspace{3mm}
+ 
+    \begin{minipage}{\textwidth}
+        \fontsize{9pt}{13pt}\selectfont
+        \textit{Note.} 四個天期下訓練期、測試期及超參數設定完全一致，僅選擇權天期不同。傳統計量基準因不依賴選擇權天期特徵，突破比率不受替換影響，本表省略。\textbf{粗體}標示集成學習最佳模型（LightGBM）。\textsuperscript{$\ddagger$} 表示突破比率超過 2\%。資料來源：本研究計算。
+    \end{minipage}
+\end{table}
+% ───────────────────────────────────────────
+
+表~\ref{tab:tenor_comparison} 揭示了 QR-IM 模型的績效呈現高度的天期依賴性，並展現出明確的 1W $\to$ 6M $\to$ 1Y $\to$ 3Y 退化梯度。當選擇權天期拉長至 1Y 或 3Y 時，多數幣別（如 GBP/USD、USD/JPY 與 USD/CAD）的突破比率顯著超越 2\% 的監理門檻。此現象反映長端隱含波動率中所包含的期限溢酬（Term premium）與長期總體經濟預期，會對短期的每日尾部風險估計造成系統性干擾。
+
+相較之下，集成學習模型展現了卓越的跨天期穩健性。LightGBM 在四個天期設定下，全數 7 個幣別的 1\% 突破比率均嚴格控制在 2\% 甚至更低水準，為抗干擾能力最強的模型。整體而言，「集成學習 $>$ QR-IM $>$ FHS-IV」的績效排序在各天期設定中皆一致成立。此退化梯度驗證了本研究選擇 1W 短天期選擇權特徵，對於捕捉高頻 VaR 動態的合理性與必要性。
+
+% ───────────────────────────
+\section{子樣本分析}
+\label{sec:r_subsample}
+% ───────────────────────────
+
+為驗證模型在極端市場下的泛化能力，本節將樣本外評估期切分為 COVID-19 疫情衝擊（2020–2021）與聯準會升息循環（2022–2025）2 個子樣本分析。
+
+表~\ref{tab:r3a_breach}、~\ref{tab:r3a_backtest} 顯示疫情期間的 1\% 名目水準的預測績效與檢定結果。在疫情的急性衝擊期間，隱含波動率發生劇烈跳升。在此極端情境下，QR-IM 的監理評級降至 5/7 綠燈，反映線性模型在面對跳躍式變數時的局限；而 LightGBM 與 CatBoost 仍維持 7/7 的滿分綠燈，證實樹狀集成模型對短期巨震具備強健的適應力。深度學習模型（如 FFNN）則於此期間全數落入警戒區（0/7 綠燈），尤其在受原油需求驟降衝擊的加幣上出現嚴重低估，凸顯低維特徵在黑天鵝事件下難以驅動神經網路的劣勢。
+
+表~\ref{tab:r3b_breach}、 ~\ref{tab:r3b_backtest} 進一步顯示聯準會升息循環的 1\% 名目水準的預測績效與檢定結果。聯準會升息循環中，市場特徵轉為強勢美元與利差的持續性重定價。在此趨勢性環境中，QR-IM 的統計顯著性與合規性明顯回升，顯示線性分位數架構在處理平緩但持久的趨勢風險時，表現優於應對急性衝擊。LightGBM 同樣維持 7/7 綠燈的統治力。值得注意的是，受央行政策干預的影響，部分模型在管制匯率（USD/TWD）的 DQ 檢定上出現跨模型的系統性群集拒絕，進一步印證了市場微觀結構與央行行為對尾部風險特性的干擾。
+
+% ────────────────────────────
+\begin{table}[htbp]
+    \centering
+    \linespread{1.2}\selectfont
+    \renewcommand{\arraystretch}{1.2}
+    \fontsize{8pt}{11pt}\selectfont
+    \vspace{3mm}
+    \caption{疫情衝擊子樣本：1\% 信心水準的預測結果與評級}
+    \label{tab:r3a_breach}
+    \resizebox{\textwidth}{!}{%
+    \begin{tabular}{lcccccccl}
+        \hline
+        \textbf{模型} & \textbf{EUR/USD} & \textbf{GBP/USD} & \textbf{USD/JPY}
+        & \textbf{USD/CAD} & \textbf{AUD/USD} & \textbf{USD/CHF} & \textbf{USD/TWD}
+        & \textbf{Basel} \\
+        \hline
+        FHS-IV
+          & 2.11\textsuperscript{$\ddagger$}
+          & 1.92 & 1.72 & 1.15
+          & 2.49\textsuperscript{$\ddagger$}
+          & 1.34 & 1.42 & 4/7\,G \\
+        QR-IM
+          & 1.72
+          & 2.11\textsuperscript{$\ddagger$}
+          & 1.15 & 1.15 & 1.34 & 0.57 & 0.61 & 5/7\,G \\
+        RandomForest
+          & 0.77 & 1.92 & 1.15 & 1.15 & 1.15 & 0.57 & 0.41 & 7/7\,G \\
+        XGBoost
+          & 0.19 & 0.77 & 0.19 & 0.38 & 0.38 & 0.00 & 0.00 & 7/7\,G \\
+        \textbf{LightGBM}
+          & \textbf{0.96} & \textbf{1.53} & \textbf{0.38}
+          & \textbf{0.57} & \textbf{0.57} & \textbf{0.38}
+          & \textbf{0.00} & 7/7\,G \\
+        CatBoost
+          & 0.96 & 1.34 & 0.57 & 0.77 & 0.96 & 0.38 & 0.41 & 7/7\,G \\
+        FFNN
+          & 1.15
+          & 2.87\textsuperscript{$\ddagger$}
+          & 3.26\textsuperscript{$\ddagger$}
+          & 8.43\textsuperscript{$\ddagger$}
+          & 1.92
+          & 2.11\textsuperscript{$\ddagger$}
+          & 3.66\textsuperscript{$\ddagger$}
+          & 0/7\,G \\
+        RNN
+          & 1.34
+          & 2.68\textsuperscript{$\ddagger$}
+          & 2.68\textsuperscript{$\ddagger$}
+          & 2.30\textsuperscript{$\ddagger$}
+          & 2.49\textsuperscript{$\ddagger$}
+          & 1.92
+          & 2.44\textsuperscript{$\ddagger$}
+          & 3/7\,G \\
+        LSTM
+          & 0.96
+          & 2.11\textsuperscript{$\ddagger$}
+          & 1.34 & 1.34 & 1.34 & 1.15
+          & 2.03\textsuperscript{$\ddagger$}
+          & 6/7\,G \\
+        \hline
+        \textit{名義水準} & 1.00 & 1.00 & 1.00 & 1.00 & 1.00 & 1.00 & 1.00 & \\
+        \hline
+    \end{tabular}
+    }
+    
+    \vspace{2mm}
+    
+    \begin{minipage}{\textwidth}
+        \fontsize{9pt}{13pt}\selectfont
+        \textit{Note.} 預測期間為 2020 年 1 月–2021 年 12 月，$N = 522$（USD/TWD 為 $N = 492$）。G 表示巴塞爾綠色評級；Basel 欄位數字為綠色評級幣別數。\textbf{粗體}標示各幣別最接近名義水準的集成模型。
+        \textsuperscript{$\ddagger$} 表示突破比率超過 2\%。FHS-IV EUR/USD 達巴塞爾 Red 評級（最後 250 日評估）。深度學習的跨分位數突破比率已呈現嚴格遞增，惟 LSTM USD/CAD 仍見 1\%=2.5\%（突破比率均為 1.34\%）殘留塌縮。
+    \end{minipage}
+\end{table}
+% ─────────────────────────
+
+
+% ─────────────────────────────────────
+\begin{table}[htbp]
+    \centering
+    \linespread{1.2}\selectfont
+    \renewcommand{\arraystretch}{1.2}
+    \fontsize{8pt}{11pt}\selectfont
+    \vspace{3mm}
+    \caption{疫情衝擊子樣本：CC 與 DQ 檢定的 1\% 信心水準 $p$ 值}
+    \label{tab:r3a_backtest}
+    \resizebox{\textwidth}{!}{%
+    \begin{tabular}{lccccccc}
+        \hline
+        \textbf{模型} & \textbf{EUR/USD} & \textbf{GBP/USD} & \textbf{USD/JPY}
+        & \textbf{USD/CAD} & \textbf{AUD/USD} & \textbf{USD/CHF} & \textbf{USD/TWD} \\
+        \hline
+        \multicolumn{8}{l}{\textit{Panel A：條件覆蓋（CC）檢定——$H_0$：覆蓋率等於名義水準 1\%}} \\
+        \hline
+        QR-IM        & .274 & .041\textsuperscript{$\dag$}
+                     & .882 & .892 & .689 & .560 & .632 \\
+        \textbf{LightGBM}
+                     & \textbf{.948} & \textbf{.140} & \textbf{.267}
+                     & \textbf{.560} & \textbf{.560} & \textbf{.267}
+                     & \multicolumn{1}{c}{—} \\
+        CatBoost     & .948 & .156 & .560 & .835 & .948 & .267 & .321 \\
+        FFNN         & .882 & .001\textsuperscript{$\dag$}
+                     & .000\textsuperscript{$\dag$}
+                     & .000\textsuperscript{$\dag$}
+                     & .144 & .068 & .000\textsuperscript{$\dag$} \\
+        LSTM         & .948 & .005\textsuperscript{$\dag$}
+                     & .689 & .156 & .689 & .882 & .106 \\
+        \hline
+        \multicolumn{8}{l}{\textit{Panel B：動態分位數（DQ）檢定——$H_0$：違規機率與資訊集無關}} \\
+        \hline
+        QR-IM        & .963 & .000\textsuperscript{$\dag$}
+                     & .900 & .006\textsuperscript{$\dag$}
+                     & .991 & .883 & .996 \\
+        \textbf{LightGBM}
+                     & \textbf{.997} & \textbf{.000}\textsuperscript{$\dag$}
+                     & \textbf{.980} & \textbf{.000}\textsuperscript{$\dag$}
+                     & \textbf{.983} & \textbf{.996}
+                     & \multicolumn{1}{c}{—} \\
+        CatBoost     & .990 & .000\textsuperscript{$\dag$}
+                     & .361 & .000\textsuperscript{$\dag$}
+                     & .997 & .986 & .999 \\
+        FFNN         & .994 & .000\textsuperscript{$\dag$}
+                     & .000\textsuperscript{$\dag$}
+                     & .000\textsuperscript{$\dag$}
+                     & .109 & .542 & .002\textsuperscript{$\dag$} \\
+        LSTM         & .000\textsuperscript{$\dag$}
+                     & .000\textsuperscript{$\dag$}
+                     & .001\textsuperscript{$\dag$}
+                     & .001\textsuperscript{$\dag$}
+                     & .012\textsuperscript{$\dag$}
+                     & .013\textsuperscript{$\dag$}
+                     & .953 \\
+        \hline
+    \end{tabular}
+    }
+ 
+    \vspace{3mm}
+ 
+    \begin{minipage}{\textwidth}
+        \fontsize{9pt}{13pt}\selectfont
+        \textit{Note.} 預測期間為 2020 年 1 月--2021 年 12 月，$N = 522$（USD/TWD 為 $N = 492$）。      \textsuperscript{$\dag$} 表示在 5\% 顯著水準下拒絕虛無假設（即模型在該貨幣對通過對應檢定）。「—」表示因樣本量差異 USD/TWD LightGBM 回測統計未計算。\textbf{粗體}標示集成學習最佳模型（LightGBM）。資料來源：本研究計算。
+    \end{minipage}
+\end{table}
+% ─────────────────────────────────────
+ 
+% ─────────────────────────────────────
+\begin{table}[htbp]
+    \centering
+    \linespread{1.2}\selectfont
+    \renewcommand{\arraystretch}{1.2}
+    \fontsize{8pt}{11pt}\selectfont
+    \vspace{3mm}
+    \caption{升息周期子樣本：1\% 信心水準的預測結果與評級}
+    \label{tab:r3b_breach}
+    \resizebox{\textwidth}{!}{%
+    \begin{tabular}{lcccccccl}
+        \hline
+        \textbf{模型} & \textbf{EUR/USD} & \textbf{GBP/USD} & \textbf{USD/JPY}
+        & \textbf{USD/CAD} & \textbf{AUD/USD} & \textbf{USD/CHF} & \textbf{USD/TWD}
+        & \textbf{Basel} \\
+        \hline
+        FHS-IV
+          & 1.63 & 1.34 & 1.63 & 1.44 & 1.63 & 1.73 & 1.54 & 5/7\,G \\
+        QR-IM
+          & 1.34 & 1.25 & 1.15 & 1.73 & 1.25 & 1.54 & 0.51 & 7/7\,G \\
+        RandomForest
+          & 1.06 & 1.15 & 0.96 & 1.54 & 1.15 & 1.44 & 0.61 & 7/7\,G \\
+        XGBoost
+          & 0.19 & 0.38 & 0.77 & 0.29 & 0.67 & 0.48 & 0.31 & 7/7\,G \\
+        \textbf{LightGBM}
+          & \textbf{0.67} & \textbf{0.58} & \textbf{0.86}
+          & \textbf{0.48} & \textbf{0.96} & \textbf{0.86}
+          & \textbf{0.41} & 7/7\,G \\
+        CatBoost
+          & 0.86 & 1.06 & 0.86 & 1.25 & 0.96 & 1.25 & 0.61 & 7/7\,G \\
+        FFNN
+          & 1.34
+          & 4.32\textsuperscript{$\ddagger$}
+          & 2.30\textsuperscript{$\ddagger$}
+          & 4.80\textsuperscript{$\ddagger$}
+          & 1.92
+          & 2.59\textsuperscript{$\ddagger$}
+          & 10.34\textsuperscript{$\ddagger$}
+          & 3/7\,G \\
+        RNN
+          & 1.92
+          & 3.84\textsuperscript{$\ddagger$}
+          & 3.17\textsuperscript{$\ddagger$}
+          & 1.82
+          & 2.50\textsuperscript{$\ddagger$}
+          & 2.69\textsuperscript{$\ddagger$}
+          & 2.56\textsuperscript{$\ddagger$}
+          & 3/7\,G \\
+        LSTM
+          & 1.34
+          & 2.59\textsuperscript{$\ddagger$}
+          & 2.11\textsuperscript{$\ddagger$}
+          & 0.86 & 1.54
+          & 2.02\textsuperscript{$\ddagger$}
+          & 1.84
+          & 4/7\,G \\
+        \hline
+        \textit{名義水準} & 1.00 & 1.00 & 1.00 & 1.00 & 1.00 & 1.00 & 1.00 & \\
+        \hline
+    \end{tabular}
+    }
+    
+    \vspace{3mm}
+    
+    \begin{minipage}{\textwidth}
+        \fontsize{9pt}{13pt}\selectfont
+        \textit{Note.} $N = 1{,}042$（USD/TWD 為 $N = 977$）。G 表示巴塞爾綠色評級；Basel 欄為綠色評級幣別數。
+        \textbf{粗體}標示集成學習最佳模型（LightGBM）。\textsuperscript{$\ddagger$} 表示突破比率超過 2\%。FHS-IV USD/JPY 與 USD/TWD 呈 Yellow 評級。LSTM USD/CAD 的殘留塌縮（1\%=2.5\%=0.86\%）在此子樣本同樣出現。資料來源：本研究計算。
+    \end{minipage}
+\end{table}
+% ────────────────────────────────
+
+% ──────────────────────────────────
+\begin{table}[htbp]
+    \centering
+    \linespread{1.2}\selectfont
+    \renewcommand{\arraystretch}{1.2}
+    \fontsize{8pt}{11pt}\selectfont
+    \vspace{3mm}
+    \caption{升息周期子樣本：CC 與 DQ 檢定的 1\% 信心水準 $p$ 值}
+    \label{tab:r3b_backtest}
+    \resizebox{\textwidth}{!}{%
+    \begin{tabular}{lccccccc}
+        \hline
+        \textbf{模型} & \textbf{EUR/USD} & \textbf{GBP/USD} & \textbf{USD/JPY}
+        & \textbf{USD/CAD} & \textbf{AUD/USD} & \textbf{USD/CHF} & \textbf{USD/TWD} \\
+        \hline
+        \multicolumn{8}{l}{\textit{Panel A：條件覆蓋（CC）檢定——$H_0$：覆蓋率等於名義水準 1\%}} \\
+        \hline
+        QR-IM        & .472 & .629 & .775 & .074 & .629 & .138 & .233 \\
+        \textbf{LightGBM}
+                     & \textbf{.502} & \textbf{.316} & \textbf{.834}
+                     & \textbf{.167} & \textbf{.900} & \textbf{.160}
+                     & \textbf{.004}\textsuperscript{$\dag$} \\
+        CatBoost     & .834 & .875 & .834 & .629 & .900 & .263
+                     & .035\textsuperscript{$\dag$} \\
+        FFNN         & .472
+                     & .000\textsuperscript{$\dag$}
+                     & .001\textsuperscript{$\dag$}
+                     & .000\textsuperscript{$\dag$}
+                     & .020\textsuperscript{$\dag$}
+                     & .000\textsuperscript{$\dag$}
+                     & .000\textsuperscript{$\dag$} \\
+        LSTM         & .472
+                     & .000\textsuperscript{$\dag$}
+                     & .005\textsuperscript{$\dag$}
+                     & .834 & .213
+                     & .011\textsuperscript{$\dag$}
+                     & .001\textsuperscript{$\dag$} \\
+        \hline
+        \multicolumn{8}{l}{\textit{Panel B：動態分位數（DQ）檢定——$H_0$：違規機率與資訊集無關}} \\
+        \hline
+        QR-IM        & .282 & .870 & .304 & .734 & .983 & .337 & .997 \\
+        \textbf{LightGBM}
+                     & \textbf{.001}\textsuperscript{$\dag$}
+                     & \textbf{.999} & \textbf{.997}
+                     & \textbf{.000}\textsuperscript{$\dag$}
+                     & \textbf{.993}
+                     & \textbf{.038}\textsuperscript{$\dag$}
+                     & \textbf{.000}\textsuperscript{$\dag$} \\
+        CatBoost     & .019\textsuperscript{$\dag$}
+                     & .956 & .993 & .428 & .910 & .404
+                     & .000\textsuperscript{$\dag$} \\
+        FFNN         & .469
+                     & .000\textsuperscript{$\dag$}
+                     & .268
+                     & .000\textsuperscript{$\dag$}
+                     & .702 & .095
+                     & .000\textsuperscript{$\dag$} \\
+        LSTM         & .438
+                     & .000\textsuperscript{$\dag$}
+                     & .610
+                     & .040\textsuperscript{$\dag$}
+                     & .925 & .069
+                     & .000\textsuperscript{$\dag$} \\
+        \hline
+    \end{tabular}
+    }
+ 
+    \vspace{3mm}
+ 
+    \begin{minipage}{\textwidth}
+        \fontsize{9pt}{13pt}\selectfont
+        \textit{Note.} 預測期間為 2022 年 1 月--2025 年 12 月，$N = 1{,}042$（USD/TWD 為 $N = 977$）。\textsuperscript{$\dag$} 表示在 5\% 顯著水準下拒絕虛無假設（即模型在該幣別未通過對應檢定）。\textbf{粗體}標示集成學習最佳模型（LightGBM）。資料來源：本研究計算。
+    \end{minipage}
+\end{table}
+% ─────────────────────────────────
+
+綜合前章的實證結果與本章的穩健性測試，本研究已確立以選擇權隱含資訊搭配樹狀集成學習，為外匯 VaR 預測的最優路徑。然而，傳導路徑可行性、統計顯著性與回測通過率尚須轉化為實務風險管理意涵。因此，下一章將導入事件研究法，聚焦於特定黑天鵝事件發生的窗口期，進一步剖析前瞻性模型在極度恐慌時的微觀反應與效益，以完善風險管理實務。

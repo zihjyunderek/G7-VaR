@@ -1,0 +1,196 @@
+% =============================================
+% 附錄 A：各貨幣對現貨報酬率序列與分布
+% =============================================
+\appendix{A}{各貨幣對現貨報酬率序列與分布}
+\setcounter{figure}{0}
+\renewcommand{\thefigure}{A-\arabic{figure}}
+
+% ── 第一張：[!ht] 緊接標題，縮小至能塞入同頁 ──────────────────
+\begin{figure}[!ht]
+    \centering
+    \includegraphics[height=0.75\textheight, keepaspectratio, page=1]{contents/Appendix_A_spot.pdf}
+    \caption{EUR/USD 與 USD/JPY 每日即期匯率與對數報酬率之序列與分布圖}
+    \label{fig:app-a-1}
+\end{figure}
+
+% ── 第 2–4 張：各自獨立佔一頁，維持原始大小 ────
+\begin{figure}[p]
+    \centering
+    \includegraphics[width=\linewidth, page=2]{contents/Appendix_A_spot.pdf}
+    \caption{GBP/USD 與 AUD/USD 每日即期匯率與對數報酬率之序列與分布圖}
+    \label{fig:app-a-2}
+\end{figure}
+
+\begin{figure}[p]
+    \centering
+    \includegraphics[width=\linewidth, page=3]{contents/Appendix_A_spot.pdf}
+    \caption{USD/CHF 與 USD/CAD 每日即期匯率與對數報酬率之序列與分布圖}
+    \label{fig:app-a-3}
+\end{figure}
+
+% Appendix A — page 4 (USD/TWD)
+\begin{figure}[p]
+    \centering
+    \includegraphics[width=\linewidth, page=4,
+                     trim=0 120mm 0 0, clip]{contents/Appendix_A_spot.pdf}
+    \caption{USD/TWD 每日即期匯率與對數報酬率之序列與分布圖}
+    \label{fig:app-a-4}
+\end{figure}
+
+
+% =============================================
+% 附錄 B：各貨幣對隱含波動率、風險逆轉與蝶式價差
+% =============================================
+\appendix{B}{各貨幣對波動率曲面序列與分布}
+\setcounter{figure}{0}
+\renewcommand{\thefigure}{B-\arabic{figure}}
+
+% ── 第一張：同樣緊接標題 ──────────────────────────────────────
+\begin{figure}[!ht]
+    \centering
+    \includegraphics[height=0.73\textheight, keepaspectratio, page=1]{contents/Appendix_B_options.pdf}
+    \caption{EUR/USD 與 USD/JPY 1 週天期選擇權波動率曲面特徵之序列與分布圖}
+    \label{fig:app-b-1}
+\end{figure}
+
+% ── 第 2–4 張：各自獨立佔一頁 ────────────────────────────────
+\begin{figure}[p]
+    \centering
+    \includegraphics[width=\linewidth, page=2]{contents/Appendix_B_options.pdf}
+    \caption{GBP/USD 與 AUD/USD  1 週天期選擇權波動率曲面特徵之序列與分布圖}
+    \label{fig:app-b-2}
+\end{figure}
+
+\begin{figure}[p]
+    \centering
+    \includegraphics[width=\linewidth, page=3]{contents/Appendix_B_options.pdf}
+    \caption{USD/CHF 與 USD/CAD 1 週天期選擇權波動率曲面特徵之序列與分布圖}
+    \label{fig:app-b-3}
+\end{figure}
+
+% Appendix B — page 4 (USD/TWD)
+\begin{figure}[p]
+    \centering
+    \includegraphics[width=\linewidth, page=4,
+                     trim=0 115mm 0 0, clip]{contents/Appendix_B_options.pdf}
+    \caption{USD/TWD 1 週天期選擇權波動率曲面特徵之序列與分布圖}
+    \label{fig:app-b-4}
+\end{figure}
+
+
+
+
+
+% ===========================
+% 附錄 C：樣本外 VaR 預測下界序列補充圖（圖 D.1–D.6）
+% =========================
+% 插入位置：\appendix{D}{-} 與 \setcounter{table}{0} 之後
+% 需加入：
+%   \setcounter{figure}{0}
+%   \renewcommand{\thefigure}{D.\arabic{figure}}
+% 生成腳本：plot_var_timeseries.py（v4）
+% =============================
+
+\appendix{C}{多幣別樣本外 1\% VaR 預測序列圖}
+\setcounter{figure}{0}
+\renewcommand{\thefigure}{C-\arabic{figure}}
+
+本附錄呈現圖~\ref{fig:var_timeseries}（EUR/USD）以外，其餘六個研究標的貨幣對的 1\% 信心水準 VaR 預測下界（$-\widehat{\mathrm{VaR}}_{1\%,t}$）序列圖（2020–2025 年）。圖形格式與圖~\ref{fig:var_timeseries} 一致：（a）集成學習模型（b）深度學習模型。倒三角（$\triangledown$）標示 VaR 突破事件，完整統計見主表~\ref{tab:breach_1pct}。
+
+\vspace{4mm}
+
+% ─────── 圖 D.1：GBP/USD ───────────────────────────────────
+\begin{figure}[H]
+    \centering
+    \caption{GBP/USD 樣本外 1\% VaR 預測下界序列圖}
+    \label{fig:app_d_gbpusd}
+    \vspace{2mm}
+    \includegraphics[width=\textwidth]{figures/Figure D-1.pdf}
+    \vspace{2mm}
+    \begin{minipage}{\textwidth}
+        \fontsize{9pt}{13pt}\selectfont
+        \textit{Note.} 格式同圖~\ref{fig:var_timeseries}；$N = 1{,}565$；$y_{\min} \approx -0.047$。
+        部分集成學習模型於 2022 年迷你預算危機期間出現極端 VaR 尖峰（截斷範圍外），縱軸已截斷以維持可讀性。資料來源：本研究計算。
+    \end{minipage}
+\end{figure}
+\vspace{2mm}
+
+% ─────── 圖 D.2：USD/JPY ───────────────────────────────────
+\begin{figure}[H]
+    \centering
+    \caption{USD/JPY 樣本外 1\% VaR 預測下界序列圖}
+    \label{fig:app_d_usdjpy}
+    \vspace{2mm}
+    \includegraphics[width=\textwidth]{figures/Figure D-2.pdf}
+    \vspace{2mm}
+    \begin{minipage}{\textwidth}
+        \fontsize{9pt}{13pt}\selectfont
+        \textit{Note.} 格式同圖~\ref{fig:var_timeseries}；$N = 1{,}565$；$y_{\min} \approx -0.044$。
+        USD/JPY 升息周期中呈現持續單向走勢，VaR 邊界擴張速度相對其他幣別較緩。資料來源：本研究計算。
+    \end{minipage}
+\end{figure}
+\vspace{2mm}
+
+% ─────── 圖 D.3：USD/CAD ───────────────────────────────────
+\begin{figure}[H]
+    \centering
+    \caption{USD/CAD 樣本外 1\% VaR 預測下界序列圖}
+    \label{fig:app_d_usdcad}
+    \vspace{2mm}
+    \includegraphics[width=\textwidth]{figures/Figure D-3.pdf}
+    \vspace{2mm}
+    \begin{minipage}{\textwidth}
+        \fontsize{9pt}{13pt}\selectfont
+        \textit{Note.} 格式同圖~\ref{fig:var_timeseries}；$N = 1{,}565$；$y_{\min} \approx -0.030$。
+        (b) 面板中 LSTM（深紅色）的 VaR 邊界顯著窄於 RNN，直觀呈現殘留分位數塌縮現象（見主文表~\ref{tab:lstm_collapse}）。USD/CAD 為 RR25 係數異質性最顯著幣別。資料來源：本研究計算。
+    \end{minipage}
+\end{figure}
+\vspace{2mm}
+
+% ─────── 圖 D.4：AUD/USD ───────────────────────────────────
+\begin{figure}[H]
+    \centering
+    \caption{AUD/USD 樣本外 1\% VaR 預測下界序列圖}
+    \label{fig:app_d_audusd}
+    \vspace{2mm}
+    \includegraphics[width=\textwidth]{figures/Figure D-4.pdf}
+    \vspace{2mm}
+    \begin{minipage}{\textwidth}
+        \fontsize{9pt}{13pt}\selectfont
+        \textit{Note.} 格式同圖~\ref{fig:var_timeseries}；$N = 1{,}565$；$y_{\min} \approx -0.046$。
+        AUD/USD 作為大宗商品貨幣，COVID-19 時期 VaR 邊界擴張幅度明顯高於 EUR/USD。資料來源：本研究計算。
+    \end{minipage}
+\end{figure}
+\vspace{2mm}
+
+% ─────── 圖 D.5：USD/CHF ───────────────────────────────────
+\begin{figure}[H]
+    \centering
+    \caption{USD/CHF 樣本外 1\% VaR 預測下界序列圖}
+    \label{fig:app_d_usdchf}
+    \vspace{2mm}
+    \includegraphics[width=\textwidth]{figures/Figure D-5.pdf}
+    \vspace{2mm}
+    \begin{minipage}{\textwidth}
+        \fontsize{9pt}{13pt}\selectfont
+        \textit{Note.} 格式同圖~\ref{fig:var_timeseries}；$N = 1{,}565$；$y_{\min} \approx -0.038$。
+        USD/CHF 的 ATM 係數在 7 個幣別中絕對值最大（$-0.160$），危機時期 VaR 反應最顯著，部分集成學習模型出現極端 VaR 尖峰（截斷範圍外），縱軸已截斷以維持可讀性。資料來源：本研究計算。
+    \end{minipage}
+\end{figure}
+\vspace{2mm}
+
+% ─────── 圖 D.6：USD/TWD ───────────────────────────────────
+\begin{figure}[H]
+    \centering
+    \caption{USD/TWD 樣本外 1\% VaR 預測下界序列圖}
+    \label{fig:app_d_usdtwd}
+    \vspace{2mm}
+    \includegraphics[width=\textwidth]{figures/Figure D-6.pdf}
+    \vspace{2mm}
+    \begin{minipage}{\textwidth}
+        \fontsize{9pt}{13pt}\selectfont
+        \textit{Note.} 格式同圖~\ref{fig:var_timeseries}；$N = 1{,}470$；$y_{\min} \approx -0.021$。
+        USD/TWD 樣本外 $N = 1{,}470$；VaR 邊界幅度全期最低，與管制匯率市場低波動特性一致（\S\ref{sec:ev_twd}）。資料來源：本研究計算。
+    \end{minipage}
+\end{figure}
+\vspace{2mm}

@@ -1,0 +1,887 @@
+% !TeX root = ../main.tex
+
+\chapter{實證結果}
+\label{chap:results}
+
+本章接續前章方法論的研究框架，呈現 G7 與 USD/TWD 共 7 個貨幣對，在 13 種模型下的樣本外預測績效、回測結果、與巴塞爾分析與綜合評估。
+
+% ===================================
+\section{市場特性}
+\label{sec:oos_overview}
+% ===================================
+
+本研究樣本外測試期間涵蓋多個全球重大市場衝擊（2020–2025 年），形成較 \citet{blom2023estimating} 文獻期間更為嚴峻的回測環境（2018–2020 年）。主要重大事件包括：2020 年 COVID-19 疫情爆發引發的全球金融市場崩跌（2020 年 3 月）與後續各國央行貨幣寬鬆政策；2022 年聯準會以最快速度升息 400 基點壓制通膨，全球利率市場劇烈重定價；2022 年英國迷你預算危機；以及 2025 年 4 月美國宣布大範圍實施對等關稅。
+
+就樣本規模而言，除 USD/TWD 因新臺幣為部分管制匯率市場而有 1,470 筆有效預測外，其餘六個貨幣對各有 1,565 筆樣本外預測，約為 \citet{blom2023estimating}中 708 筆測試樣本規模的兩倍以上。此一強壓力測試期間直接評估模型在訓練資料分佈之外的泛化能力，以及在制度轉換期間能否維持統計覆蓋率。
+
+
+% =========================
+\section{迴歸結果}
+\label{sec:qrim_coef}
+% ===========================
+
+表~\ref{tab:qrim_coef} 呈現 7 個貨幣對在 QR-IM 線性模型下的樣本外期間迴歸結果，包含了其在 3 個分位數水準下的係數估計值及對應顯著水準。
+
+% ================================================================
+% Table 5-1: QR-IM 分位數迴歸係數估計（主要實證結果）
+\begin{table}[htbp]
+    \centering
+    \linespread{1.2}\selectfont
+    \renewcommand{\arraystretch}{1.2}
+    \fontsize{8pt}{11pt}\selectfont
+    \vspace{3mm}
+    \caption{QR-IM 分位數迴歸係數估計}
+    \label{tab:qrim_coef}
+    \resizebox{\textwidth}{!}{%
+    \begin{tabular}{llccccccc}
+        \hline
+        & & \textbf{EUR/USD} & \textbf{GBP/USD} & \textbf{USD/JPY}
+        & \textbf{USD/CAD} & \textbf{AUD/USD} & \textbf{USD/CHF} & \textbf{USD/TWD} \\
+        \hline
+        \multirow{3}{*}{\textit{截距}}
+          & $\hat\alpha_{1\%}$
+            & $-0.199^{\ **}$
+            & $-0.188^{\ *\phantom{*}}$
+            & $-0.262^{\ \phantom{**}}$
+            & $-0.088^{\ \phantom{**}}$
+            & $-0.207^{\ *\phantom{*}}$
+            & $-0.018^{\ \phantom{**}}$
+            & $\phantom{-}0.003^{\ \phantom{**}}$ \\
+          & $\hat\alpha_{2.5\%}$
+            & $-0.148^{\ **}$
+            & $-0.186^{\ **}$
+            & $-0.166^{\ \phantom{**}}$
+            & $-0.055^{\ \phantom{**}}$
+            & $-0.145^{\ \phantom{**}}$
+            & $-0.105^{\ \phantom{**}}$
+            & $-0.064^{\ \phantom{**}}$ \\
+          & $\hat\alpha_{5\%}$
+            & $-0.117^{\ **}$
+            & $-0.131^{\ *\phantom{*}}$
+            & $-0.174^{\ **}$
+            & $-0.004^{\ \phantom{**}}$
+            & $-0.059^{\ \phantom{**}}$
+            & $-0.119^{\ **}$
+            & $\phantom{-}0.006^{\ \phantom{**}}$ \\
+        \hline
+        \multirow{3}{*}{\textit{ATM IV}}
+          & $\hat\beta^{\mathrm{ATM\,IV}}_{1\%}$
+            & $-0.108^{***}$
+            & $-0.104^{***}$
+            & $-0.119^{***}$
+            & $-0.125^{***}$
+            & $-0.119^{***}$
+            & $-0.160^{***}$
+            & $-0.148^{***}$ \\
+          & $\hat\beta^{\mathrm{ATM\,IV}}_{2.5\%}$
+            & $-0.092^{***}$
+            & $-0.085^{***}$
+            & $-0.093^{***}$
+            & $-0.108^{***}$
+            & $-0.099^{***}$
+            & $-0.115^{***}$
+            & $-0.100^{***}$ \\
+          & $\hat\beta^{\mathrm{ATM\,IV}}_{5\%}$
+            & $-0.081^{***}$
+            & $-0.079^{***}$
+            & $-0.070^{***}$
+            & $-0.093^{***}$
+            & $-0.089^{***}$
+            & $-0.085^{***}$
+            & $-0.081^{***}$ \\
+        \hline
+        \multirow{3}{*}{\textit{RR25}}
+          & $\hat\beta^{\mathrm{RR}}_{1\%}$
+            & $\phantom{-}0.157^{***}$
+            & $\phantom{-}0.561^{***}$
+            & $\phantom{-}0.100^{\ \phantom{**}}$
+            & $-0.025^{\ \phantom{**}}$
+            & $\phantom{-}0.158^{\ **}$
+            & $\phantom{-}0.149^{\ **}$
+            & $\phantom{-}0.242^{***}$ \\
+          & $\hat\beta^{\mathrm{RR}}_{2.5\%}$
+            & $\phantom{-}0.201^{***}$
+            & $\phantom{-}0.318^{***}$
+            & $\phantom{-}0.085^{\ *\phantom{*}}$
+            & $\phantom{-}0.026^{\ \phantom{**}}$
+            & $\phantom{-}0.206^{***}$
+            & $\phantom{-}0.144^{\ **}$
+            & $\phantom{-}0.193^{***}$ \\
+          & $\hat\beta^{\mathrm{RR}}_{5\%}$
+            & $\phantom{-}0.112^{***}$
+            & $\phantom{-}0.185^{***}$
+            & $\phantom{-}0.048^{\ \phantom{**}}$
+            & $-0.034^{\ \phantom{**}}$
+            & $\phantom{-}0.172^{***}$
+            & $\phantom{-}0.115^{***}$
+            & $\phantom{-}0.110^{***}$ \\
+        \hline
+    \end{tabular}
+    } % Resizebox end
+
+    \vspace{3mm}
+
+    \begin{minipage}{\textwidth}
+        \fontsize{9pt}{13pt}\selectfont
+        \textit{Note.} 係數值已乘以 100，與 \citet{de2022estimating} 報告慣例一致。$^{***}$、$^{**}$、$^{*}$ 分別代表在 1\%、5\%、10\% 顯著水準下拒絕係數為零之虛無假設。訓練期為 2009 年 1 月至 2019 年 12 月，共 2{,}772 個交易日（USD/TWD 為 2{,}602 個交易日）。資料來源：本研究計算。
+    \end{minipage}
+\end{table}
+
+\paragraph{ATM IV 係數}
+
+ATM IV 係數在全部 7 個貨幣對、三個分位數水準下均為負值，且在 1\% 顯著水準下統計顯著。
+此結果與 \citet{de2022estimating} 的核心發現完全一致：價平隱含波動率上升代表市場預期波動率擴大，使條件報酬分佈的左尾向下延伸，從而提高 VaR 估計值。
+
+各幣別表現中，USD/CHF 在 1\% 分位數的 ATM IV 係數絕對值最大（$-0.160$），反映瑞郎在危機時期的避險資產屬性使波動率跳升對尾部風險的傳導效應更顯著；USD/CAD 的絕對值亦相對較大（$-0.125$），折射加拿大元受原油市場與全球風險偏好雙重衝擊的特性。
+
+圖~\ref{fig:qrim_coef_cross}(a) 直觀呈現此一跨幣別一致性：3 條分位數曲線均嚴格維持負值，且最深尾部的 1\% 曲線的絕對值在 7 個貨幣對中均高於 2.5\% 與 5\% 曲線，確認價平隱含波動率對尾部分位數的放大效應隨分位數深度單調遞增。
+
+% ──────────────────────────────
+% 圖 5-1 LaTeX Snippet
+\begin{figure}[htbp]
+    \centering
+    \caption{QR-IM ATM IV 與 25-delta RR 係數折線圖}
+    \label{fig:qrim_coef_cross}
+    \vspace{3mm}
+    \includegraphics[width=\textwidth]{figures/Figure 5-1.pdf}
+    \vspace{3mm}
+    \begin{minipage}{\textwidth}
+        \fontsize{9pt}{13pt}\selectfont
+        \textit{Note.} （a）價平隱含波動率係數 $\hat\beta^{\mathrm{ATM IV}}$；（b）25-delta 風險逆轉係數 $\hat\beta^{\mathrm{RR25}}$。橫軸為 7 個研究標的貨幣對，縱軸為迴歸係數估計值（已乘以 100）。三條線分別對應 $q = 1\%$、$q = 2.5\%$與 $q = 5\%$ 3 個分位數水準。（a）圖中所有標記均在 $p < .001$ 水準下顯著。（b）填充標記代表在 5\% 顯著水準下拒絕係數為零之虛無假設，空心標記代表不顯著。訓練期：2009 年 1 月至 2019 年 12 月。資料來源：本研究計算。
+    \end{minipage}
+\end{figure}
+% ──────────────────────────────
+
+\paragraph{風險逆轉係數}
+
+RR25 係數在多數幣別中呈現顯著的正向關係，顯示出風險逆轉作為 25-delta 買、賣權的差額，在選擇權市場釋出悲觀的偏態訊號（RR25 下降）時，尾部分位數預測值亦會隨之向下移動（變得更加負值），從而擴大 VaR 的估計規模。這證實了 RR25 能有效捕捉並傳導市場的方向性尾部風險。
+
+儘管多數幣別呈現正向關係，RR25 係數在跨幣別維度上卻展現出明確的結構性分野，顯示偏態訊號的資訊含量具有高度的幣別異質性。其中，EUR/USD、GBP/USD、AUD/USD、USD/CHF 與 USD/TWD 的 RR25 係數均顯著為正。以 GBP/USD 為例，其在 1\% 分位數的係數高達 $0.561$，遠超其他幣別，這深刻反映了英國脫歐後英鎊市場持續存在的方向性偏態壓力，使風險逆轉成為預測英鎊尾部風險最具資訊量的前瞻訊號。
+
+相較之下，USD/JPY 與 USD/CAD 的 RR25 係數則未呈現顯著的正向關係。USD/JPY 雖為正值，但在 1\% 與 5\% 分位數下統計不顯著，這反映了日圓強烈的避險屬性，使其在危機爆發時往往逆勢升值，導致其選擇權偏態預期與實際左尾損失的連動關係弱化。另一方面，USD/CAD 在 3 個分位數下均為不顯著的負值，為本研究 7 個幣別中唯一的異質案例。此現象源於 CAD 本身作為典型大宗商品貨幣的特殊性，其匯率波動高度受原油價格衝擊驅動，導致場外選擇權的偏態訊號傳遞機制與其他主要工業國幣別脫鉤，此一商品貨幣的結構特殊性在 \citet{chen2003commodity} 的文獻中亦有充分記錄，新增石油波動率為特徵的估計結果則於 \S\ \ref{subsec:r4_ovx} 揭露。
+
+圖~\ref{fig:qrim_coef_cross}(b) 彙整了上述結構性區別：GBP/USD 在 1\% 分位數的峰值（$0.561$）極為突出，而 USD/JPY 與 USD/CAD 在各分位數下均以空心標記呈現，清晰揭示了偏態預期訊號在不同幣別間差異化的資訊傳遞效果。
+
+\paragraph{截距項}
+
+截距 $\hat\alpha_q$ 在多數貨幣對中呈現負值，且在特定幣別（如 EUR/USD、GBP/USD）的 3 個分位數水準下均達統計顯著（$p < .05$）。在分位數迴歸的設定中，顯著為負的截距項顯示在控制了選擇權市場的波動率與偏態預期後，現貨市場本身仍具有常態性的下行壓力，至於是否為蝶式價差的影響，則在 \S\ \ref{subsec:r1} 中揭露。
+
+此現象主要源於本研究的迴歸估計訓練期（2009 年至 2019 年）涵蓋了歐債危機（2010–2012）、英國脫歐公投（2016）以及中美貿易戰（2018）等一系列具結構性影響的宏觀事件。這些長尾事件不僅增加了外匯市場的波動，更使條件報酬分佈的基準線系統性偏低。然而，此一因樣本期間所產生的基準偏移，屬於截距項捕捉的固定效應，並不影響 ATM IV 係數與 RR25 係數在解釋上的有效性。
+
+
+% ─────────────────────────
+\section{預測績效}
+\label{sec:perf_all}
+% ─────────────────────────
+
+本節展現 7 個貨幣對在 13 個模型中， 3 個分位數下的樣本外突破比率績效，其中，由於直接與巴塞爾監理法規相關，尤其聚焦於 1\% 信心水準下的影響，並補充各分位數的突破加總（SiB）與未突破加總（SiNB），確保模型估計並非失準或過於保守。
+
+% ───────────────────────────────────────
+\subsection{1\% 樣本外突破比率}
+\label{sec:perf_1pct}
+% ───────────────────────────────────────
+
+表~\ref{tab:breach_1pct} 呈現 7 個貨幣對在 13 個模型的 1\% 信心水準樣本外突破比率。
+
+\begin{table}[htbp]
+    \centering
+    \linespread{1.2}\selectfont
+    \renewcommand{\arraystretch}{1.2}
+    \fontsize{11pt}{15pt}\selectfont
+    \vspace{3mm}
+    \caption{各模型 1\% 信心水準下的樣本外突破比率}
+    \label{tab:breach_1pct}
+    \resizebox{\textwidth}{!}{%
+    \begin{tabular}{lccccccc}
+        \hline
+        \textbf{模型} & \textbf{EUR/USD} & \textbf{GBP/USD} & \textbf{USD/JPY}
+        & \textbf{USD/CAD} & \textbf{AUD/USD} & \textbf{USD/CHF} & \textbf{USD/TWD} \\
+        \hline
+        \multicolumn{8}{l}{\textit{傳統基準模型}} \\
+        HS              & 1.47 & 1.79 & 2.04\textsuperscript{$\ddagger$} & 1.60 & 1.66 & 1.34 & 1.43 \\
+        RiskMetrics     & 1.53 & 2.17\textsuperscript{$\ddagger$} & 2.17\textsuperscript{$\ddagger$} & 1.92 & 2.04\textsuperscript{$\ddagger$} & 1.73 & 2.45\textsuperscript{$\ddagger$} \\
+        GJR-GARCH       & 0.64 & 0.83 & 0.64 & 0.58 & 0.89 & 0.64 & 0.41\textsuperscript{\dag} \\
+        FHS-GARCH       & 1.34 & 1.41 & 1.34 & 1.41 & 1.47 & 1.47 & 1.56 \\
+        FHS-IV          & 1.79 & 1.53 & 1.66 & 1.34 & 1.92 & 1.60 & 1.50 \\
+        \hline
+        \multicolumn{8}{l}{\textit{分位數回歸模型}} \\
+        QR-IM           & 1.47 & 1.53 & 1.15 & 1.53 & 1.28 & 1.21 & 0.54 \\
+        \hline
+        \multicolumn{8}{l}{\textit{集成學習模型}} \\
+        RandomForest    & 0.96 & 1.41 & 1.02 & 1.41 & 1.15 & 1.15 & 0.54 \\
+        XGBoost         & 0.19\textsuperscript{\dag} & 0.51\textsuperscript{\dag} & 0.58 & 0.32\textsuperscript{\dag} & 0.58 & 0.32\textsuperscript{\dag} & 0.20\textsuperscript{\dag} \\
+        LightGBM        & 0.77 & 0.89 & 0.70 & 0.51\textsuperscript{\dag} & 0.83 & 0.70 & 0.27\textsuperscript{\dag} \\
+        CatBoost        & 0.89 & 1.15 & 0.77 & 1.09 & 0.96 & 0.96 & 0.54 \\
+        \hline
+        \multicolumn{8}{l}{\textit{深度學習模型（詳見 \S\ref{sec:perf_dl}）}} \\
+        FFNN            & 1.28 & 3.83\textsuperscript{$\ddagger$} & 2.62\textsuperscript{$\ddagger$} & 6.01\textsuperscript{$\ddagger$} & 1.98 & 2.43\textsuperscript{$\ddagger$} & 8.10\textsuperscript{$\ddagger$} \\
+        RNN             & 1.73 & 3.45\textsuperscript{$\ddagger$} & 3.00\textsuperscript{$\ddagger$} & 1.98 & 2.56\textsuperscript{$\ddagger$} & 2.43\textsuperscript{$\ddagger$} & 2.52\textsuperscript{$\ddagger$} \\
+        LSTM            & 1.21 & 2.43\textsuperscript{$\ddagger$} & 1.85 & 1.02 & 1.47 & 1.73 & 1.90 \\
+        \hline
+        名義水準 & 1.00 & 1.00 & 1.00 & 1.00 & 1.00 & 1.00 & 1.00 \\
+        \hline
+    \end{tabular}}
+
+    \vspace{3mm}
+
+    \begin{minipage}{\textwidth}
+        \fontsize{9pt}{13pt}\selectfont
+        \textit{Note.} 突破比率（\%），名義水準為 1\%。
+        \textsuperscript{\dag} 表示 Kupiec 檢定在 5\% 顯著水準下拒絕無條件覆蓋（VaR 系統性高估，顯示資本計提效率差）。\textsuperscript{$\ddagger$} 表示突破比率超過 2\%（VaR 系統性低估，反映監理風險存在）。樣本外預測期為 2020 年 1 月--2025 年 12 月。USD/TWD 樣本外觀測數 1{,}470 筆；其餘幣別均為 1{,}565 筆。資料來源：本研究計算。
+    \end{minipage}
+\end{table}
+% ─────────────────────────────────────────
+
+
+\paragraph{傳統基準模型}\label{sec:perf_benchmark}
+
+傳統基準模型在樣本外期間呈現明顯的兩極化現象：部分模型因無法迅速適應制度轉換或受限於常態假設，導致嚴重低估尾部風險（如歷史模擬法與 RiskMetrics）；而部分模型則因厚尾假設過強而顯得過度保守（如 GJR-GARCH）。整體而言，FHS 家族架構展現了較佳的適應性。
+
+各模型表現中，歷史模擬法在 7 個貨幣對的突破比率均超過 1.3\%，USD/JPY 甚至高達 2.04\%，反映 250 日固定視窗在市場結構劇變時反應遲滯，VaR 低估現象顯著；DQ 檢定亦在所有幣別均顯示突破時間群集（$p < .01$），違背獨立性假設。RiskMetrics 的表現同樣不佳，多數幣別突破比率超過 1.7\%（USD/TWD 高達 2.45\%），Kupiec 檢定在全數 7 個幣別皆顯著拒絕虛無假設，凸顯 EWMA 的常態假設在密集升息期間尤為侷限。相對地，GJR-GARCH 則呈現系統性偏低的覆蓋率（0.41\%–0.89\%），其搭配 Student-$t$ 殘差的厚尾假設明顯偏向保守。
+
+而在 FHS 架構中，FHS-GARCH 的突破比率最接近名義水準（1.34\%–1.56\%），多數幣別通過 Kupiec 與 CC 檢定，為傳統基準組中整體最為穩健者；然而 FHS-IV 突破比率略高（1.34\%–1.92\%），顯示若直接以 ATM IV 作為波動率過濾器而未充分整合條件分位數，在極端波動期間反而可能造成 VaR 低估。
+
+\paragraph{QR-IM 模型}\label{sec:perf_qrim}
+
+QR-IM 模型在多數幣別中展現了合理的統計覆蓋率，但受 2020–2025 年間連續系統性衝擊的高波動環境影響，整體突破比率普遍略高於 1\% 的名義水準。
+
+各幣別表現中，EUR/USD 的 1\% 突破比率為 1.47\%，Kupiec 在三個分位數下均未顯著拒絕虛無假設，CC 條件覆蓋 $p$ 值介於 .09 至 .27 之間，DQ $p$ 值介於 .27 至 .57 之間，整體具備統計有效性。與 \citet{blom2023estimating} 的樣本期間相比，本研究之突破比率偏高（1.47\% vs.\ 0.70\%），印證了近年嚴峻的宏觀環境對線性模型構成了更大考驗。
+
+跨幣別差異上，USD/JPY 的覆蓋率（1.15\%）最接近名義水準，反映日圓選擇權市場對尾部損失的前瞻預測效率相對較高；USD/CAD 的覆蓋率（1.53\%）略高，呼應了前節 RR25 係數不顯著的發現，暗示加拿大元左尾風險動態中，場外選擇權的偏態資訊量相對有限；而 USD/TWD 的異常低突破比率（0.54\%），則主要源於新臺幣屬部分管制匯率，央行的干預與調節實質上壓縮了極端尾部事件的發生頻率。
+
+\paragraph{集成學習模型}\label{sec:perf_ensemble}
+
+集成學習模型整體而言展現了最優異的尾部風險捕捉能力，多數模型在突破比率高度貼近名義水準，在統計檢定的表現上亦優於傳統基準與 QR-IM 模型；唯獨 XGBoost 因其損失函數設計而呈現出系統性的過度保守。
+
+各模型表現中，LightGBM 在全部 7 個貨幣對的 1\% 突破比率均最接近名義水準。以 EUR/USD 為例，突破比率為 0.77\%，Kupiec $p = .334$，CC $p = .571$，DQ $p = .070$，全數通過回測檢定，明顯優於 QR-IM 的 1.47\%，直接驗證了 \citet{blom2023estimating} 關於樹狀模型優勢的核心發現。
+
+CatBoost 與 RandomForest 具有相似於 LightGBM 的表現，CatBoost 的 EUR/USD 1\% 突破比率為 0.89\%（CC $p = .804$，為全部模型最高），在跨幣別的條件覆蓋一致性上表現最佳；RandomForest 亦在多數幣別接近名義水準，整體優於基準。
+
+相反地，XGBoost 在全數 7 個貨幣對的突破比率均低於名義水準，EUR/USD 僅 0.19\%（Kupiec $p < .001$），且有五個幣別顯著拒絕 Kupiec 無條件覆蓋虛無假設。此一過度保守現象源於 XGBoost 原生分位數損失函數（\texttt{reg:quantileerror}）的內生設計特性，雖使其能輕易達成巴塞爾 7/7 Green 評級，卻是建立在 VaR 系統性高估之上，導致資本計提效率顯著落後於 LightGBM。
+
+\paragraph{深度學習模型}\label{sec:perf_dl}
+
+深度學習模型在樣本外期間普遍面臨嚴峻的尾部風險低估問題，導致多數貨幣對的突破比率大幅飆升，嚴重偏離名義水準，進而使其巴塞爾監理評級表現相較不佳。
+
+儘管 FFNN、RNN 與 LSTM 三個架構均採用 \S\ref{sec:dl_training} 所述之單調性輸出頭，並以 $\varepsilon$-floor（$\varepsilon = 10^{-3}$）緩解分位數交叉問題，實際預測效能仍不如預期。
+
+在 1\% 信心水準下，FFNN 僅在 EUR/USD（1.28\%）與 AUD/USD（1.98\%）處於可接受水準，但在 USD/CAD 與 USD/TWD 分別高達 6.01\% 與 8.10\%，導致其巴塞爾監理評級僅獲 3/7 Green。RNN 的表現亦不理想，雖在 EUR/USD（1.73\%）接近可接受邊界，但在 GBP/USD（3.45\%）、USD/JPY（3.00\%）、AUD/USD（2.56\%）均顯著超標，評級同為 3/7 Green。LSTM 相對前兩者略佳，在多數幣別接近名義水準（如 EUR/USD 1.21\%、USD/CAD 1.02\%），但整體巴塞爾評級仍僅維持 4/7 Green。
+
+總體而言，深度學習模型在應對外匯市場劇烈波動時，不僅未能發揮非線性學習優勢，反而在跨分位數校準上呈現出系統性缺陷，其結構性分析詳見 \S\ref{sec:perf_allq}。
+
+圖~\ref{fig:var_timeseries} 以 EUR/USD 為代表，直觀呈現集成學習與深度學習模型在樣本外期間（2020–2025 年）的 1\% VaR 動態行為；其餘幣別的對應圖形詳見附錄~C（圖~\ref{fig:app_d_gbpusd}--\ref{fig:app_d_usdtwd}）。
+ 
+% ────────────────────────────────────────
+% 圖 5-2: EUR/USD 樣本外 1% VaR 預測與實現報酬率時間序列
+% 資料來源: main_1W/predictions/{LightGBM,CatBoost,XGBoost,RandomForest,LSTM,RNN}_predictions.csv
+% 生成腳本: plot_var_timeseries.py
+\begin{figure}[H]
+    \centering
+    \caption{樣本外 1\% VaR 估計下界折線圖（EUR/USD）}
+    \label{fig:var_timeseries}
+    \vspace{3mm}
+    \includegraphics[width=\textwidth]{figures/Figure 5-2.pdf}
+    \vspace{3mm}
+    \begin{minipage}{\textwidth}
+        \fontsize{9pt}{13pt}\selectfont
+        \textit{Note.} （a）集成學習模型；（b）深度學習模型。各彩色線條為對應模型的 1\% 信心水準樣本外 VaR 預測值，以 $-\widehat{\mathrm{VaR}}_{1\%,t}$ 形式呈現於報酬率座標軸，代表使報酬率落入最差 1\% 的臨界水準。倒三角標記（$\triangledown$）標示 VaR 突破事件（$r_t < -\widehat{\mathrm{VaR}}_{1\%,t}$），各模型完整突破統計見表~\ref{tab:breach_1pct}。其餘 6 個貨幣對之對應圖形詳見附錄~C（圖~\ref{fig:app_d_gbpusd}--\ref{fig:app_d_usdtwd}）。資料來源：本研究計算。
+    \end{minipage}
+\end{figure}
+% ────────────────────────────────────────
+
+% ────────────────────────────────────
+\subsection{全分位數樣本外突破比率}
+\label{sec:perf_allq}
+% ────────────────────────────────────
+
+表~\ref{tab:breach_all} 呈現 13 個模型在三個信心水準（$q \in \{1\%,\, 2.5\%,\, 5\%\}$）
+下的樣本外突破比率，揭示 \S\ref{sec:perf_1pct} 未能呈現的跨分位數結構性規律。
+
+\begin{table}[htbp]
+    \centering
+    \linespread{1.1}\selectfont
+    \renewcommand{\arraystretch}{1.1}
+    \fontsize{7.5pt}{10pt}\selectfont
+    \vspace{3mm}
+    \caption{全部模型 3 個分位數突破比率（1\%、2.5\%、5\%）}
+    \label{tab:breach_all}
+    \resizebox{\textwidth}{!}{%
+    \begin{tabular}{llccccccc}
+        \hline
+        \textbf{模型} & \textbf{$q$}
+        & \textbf{EUR/USD} & \textbf{GBP/USD} & \textbf{USD/JPY}
+        & \textbf{USD/CAD} & \textbf{AUD/USD} & \textbf{USD/CHF} & \textbf{USD/TWD} \\
+        \hline
+        %%% ── 傳統基準模型 ─────────────────────────────────────────
+        \multicolumn{9}{l}{\textit{傳統基準模型}} \\
+        \multirow{3}{*}{HS}
+          & $1\%$   & 1.47 & 1.79\textsuperscript{$\ddagger$} & 2.04\textsuperscript{$\ddagger$} & 1.60\textsuperscript{$\ddagger$} & 1.66\textsuperscript{$\ddagger$} & 1.34 & 1.43 \\
+          & $2.5\%$ & 3.39\textsuperscript{$\ddagger$} & 2.88 & 3.58\textsuperscript{$\ddagger$} & 3.13 & 3.26 & 2.94 & 3.13 \\
+          & $5\%$   & 6.07 & 5.30 & 5.88 & 5.05 & 5.62 & 5.62 & 5.92 \\
+        \hline
+        \multirow{3}{*}{RiskMetrics}
+          & $1\%$   & 1.53\textsuperscript{$\ddagger$} & 2.17\textsuperscript{$\ddagger$} & 2.17\textsuperscript{$\ddagger$} & 1.92\textsuperscript{$\ddagger$} & 2.04\textsuperscript{$\ddagger$} & 1.73\textsuperscript{$\ddagger$} & 2.45\textsuperscript{$\ddagger$} \\
+          & $2.5\%$ & 3.13 & 3.13 & 3.45\textsuperscript{$\ddagger$} & 3.00 & 3.39\textsuperscript{$\ddagger$} & 2.88 & 3.74\textsuperscript{$\ddagger$} \\
+          & $5\%$   & 5.69 & 4.98 & 5.56 & 4.66 & 5.24 & 5.18 & 5.51 \\
+        \hline
+        \multirow{3}{*}{GJR-GARCH}
+          & $1\%$   & 0.64 & 0.83 & 0.64 & 0.58 & 0.89 & 0.64 & 0.41\textsuperscript{\dag} \\
+          & $2.5\%$ & 1.60\textsuperscript{\dag} & 1.85 & 1.21\textsuperscript{\dag} & 1.66\textsuperscript{\dag} & 2.30 & 1.34\textsuperscript{\dag} & 1.43\textsuperscript{\dag} \\
+          & $5\%$   & 3.32\textsuperscript{\dag} & 3.45\textsuperscript{\dag} & 2.11\textsuperscript{\dag} & 3.45\textsuperscript{\dag} & 4.34 & 2.81\textsuperscript{\dag} & 2.86\textsuperscript{\dag} \\
+        \hline
+        \multirow{3}{*}{FHS-GARCH}
+          & $1\%$   & 1.34 & 1.41 & 1.34 & 1.41 & 1.47 & 1.47 & 1.56\textsuperscript{$\ddagger$} \\
+          & $2.5\%$ & 2.68 & 3.26 & 2.62 & 2.68 & 2.88 & 2.94 & 2.86 \\
+          & $5\%$   & 5.24 & 5.43 & 5.75 & 5.62 & 5.18 & 5.43 & 5.10 \\
+        \hline
+        \multirow{3}{*}{FHS-IV}
+          & $1\%$   & 1.79\textsuperscript{$\ddagger$} & 1.53\textsuperscript{$\ddagger$} & 1.66\textsuperscript{$\ddagger$} & 1.34 & 1.92\textsuperscript{$\ddagger$} & 1.60\textsuperscript{$\ddagger$} & 1.50 \\
+          & $2.5\%$ & 3.51\textsuperscript{$\ddagger$} & 3.26 & 3.45\textsuperscript{$\ddagger$} & 2.49 & 3.19 & 3.07 & 3.20 \\
+          & $5\%$   & 5.24 & 6.07 & 6.07 & 4.79 & 6.01 & 5.81 & 5.31 \\
+        \hline
+        %%% ── 分位數回歸模型 ────────────────────────────────────────
+        \multicolumn{9}{l}{\textit{分位數回歸模型}} \\
+        \multirow{3}{*}{QR-IM}
+          & $1\%$   & 1.47 & 1.53\textsuperscript{$\ddagger$} & 1.15 & 1.53\textsuperscript{$\ddagger$} & 1.28 & 1.21 & 0.54 \\
+          & $2.5\%$ & 3.26 & 3.13 & 2.62 & 3.07 & 2.81 & 2.24 & 1.63\textsuperscript{\dag} \\
+          & $5\%$   & 5.43 & 4.92 & 5.18 & 5.56 & 4.73 & 5.43 & 4.49 \\
+        \hline
+        %%% ── 集成學習模型 ──────────────────────────────────────────
+        \multicolumn{9}{l}{\textit{集成學習模型}} \\
+        \multirow{3}{*}{RandomForest}
+          & $1\%$   & 0.96 & 1.41 & 1.02 & 1.41 & 1.15 & 1.15 & 0.54 \\
+          & $2.5\%$ & 2.68 & 2.81 & 2.43 & 2.81 & 2.49 & 2.11 & 1.70\textsuperscript{\dag} \\
+          & $5\%$   & 5.11 & 4.92 & 4.86 & 5.43 & 4.60 & 5.11 & 4.29 \\
+        \hline
+        \multirow{3}{*}{XGBoost}
+          & $1\%$   & 0.19\textsuperscript{\dag} & 0.51\textsuperscript{\dag} & 0.58 & 0.32\textsuperscript{\dag} & 0.58 & 0.32\textsuperscript{\dag} & 0.20\textsuperscript{\dag} \\
+          & $2.5\%$ & 0.96\textsuperscript{\dag} & 1.85 & 2.11 & 1.47\textsuperscript{\dag} & 2.04 & 1.41\textsuperscript{\dag} & 1.22\textsuperscript{\dag} \\
+          & $5\%$   & 2.49\textsuperscript{\dag} & 4.15 & 4.54 & 3.83\textsuperscript{\dag} & 4.47 & 4.34 & 4.01 \\
+        \hline
+        \multirow{3}{*}{LightGBM}
+          & $1\%$   & 0.77 & 0.89 & 0.70 & 0.51\textsuperscript{\dag} & 0.83 & 0.70 & 0.27\textsuperscript{\dag} \\
+          & $2.5\%$ & 2.04 & 2.30 & 2.17 & 1.85 & 2.36 & 1.53\textsuperscript{\dag} & 1.29\textsuperscript{\dag} \\
+          & $5\%$   & 4.09 & 4.22 & 4.09 & 3.77\textsuperscript{\dag} & 4.54 & 4.28 & 3.47\textsuperscript{\dag} \\
+        \hline
+        \multirow{3}{*}{CatBoost}
+          & $1\%$   & 0.89 & 1.15 & 0.77 & 1.09 & 0.96 & 0.96 & 0.54 \\
+          & $2.5\%$ & 2.49 & 2.81 & 2.49 & 2.75 & 2.49 & 1.92 & 1.70\textsuperscript{\dag} \\
+          & $5\%$   & 4.98 & 4.86 & 5.05 & 5.24 & 4.66 & 5.11 & 4.42 \\
+        \hline
+        %%% ── 深度學習模型 ──────────────────────────────────────────
+        \multicolumn{9}{l}{\textit{深度學習模型}} \\
+        \multirow{3}{*}{FFNN}
+          & $1\%$   & 1.28 & 3.83\textsuperscript{$\ddagger$} & 2.62\textsuperscript{$\ddagger$} & 6.01\textsuperscript{$\ddagger$} & 1.98\textsuperscript{$\ddagger$} & 2.43\textsuperscript{$\ddagger$} & 8.10\textsuperscript{$\ddagger$} \\
+          & $2.5\%$ & 2.49 & 5.18\textsuperscript{$\ddagger$} & 3.71\textsuperscript{$\ddagger$} & 7.73\textsuperscript{$\ddagger$} & 2.68 & 3.32\textsuperscript{$\ddagger$} & 13.20\textsuperscript{$\ddagger$} \\
+          & $5\%$   & 4.34 & 6.77\textsuperscript{$\ddagger$} & 5.11 & 10.67\textsuperscript{$\ddagger$} & 3.77\textsuperscript{\dag} & 5.18 & 21.09\textsuperscript{$\ddagger$} \\
+        \hline
+        \multirow{3}{*}{RNN}
+          & $1\%$   & 1.73\textsuperscript{$\ddagger$} & 3.45\textsuperscript{$\ddagger$} & 3.00\textsuperscript{$\ddagger$} & 1.98\textsuperscript{$\ddagger$} & 2.56\textsuperscript{$\ddagger$} & 2.43\textsuperscript{$\ddagger$} & 2.52\textsuperscript{$\ddagger$} \\
+          & $2.5\%$ & 2.94 & 5.11\textsuperscript{$\ddagger$} & 3.83\textsuperscript{$\ddagger$} & 3.19 & 3.26 & 3.45\textsuperscript{$\ddagger$} & 4.15\textsuperscript{$\ddagger$} \\
+          & $5\%$   & 4.86 & 6.26\textsuperscript{$\ddagger$} & 5.30 & 5.11 & 4.22 & 5.56 & 7.82\textsuperscript{$\ddagger$} \\
+        \hline
+        \multirow{3}{*}{LSTM}
+          & $1\%$   & 1.21 & 2.43\textsuperscript{$\ddagger$} & 1.85\textsuperscript{$\ddagger$} & 1.02 & 1.47 & 1.73\textsuperscript{$\ddagger$} & 1.90\textsuperscript{$\ddagger$} \\
+          & $2.5\%$ & 1.66\textsuperscript{\dag} & 3.13 & 2.43 & 1.02\textsuperscript{\dag} & 2.11 & 2.11 & 3.06 \\
+          & $5\%$   & 2.36\textsuperscript{\dag} & 3.77\textsuperscript{\dag} & 3.00\textsuperscript{\dag} & 1.41\textsuperscript{\dag} & 2.81\textsuperscript{\dag} & 3.39\textsuperscript{\dag} & 5.99 \\
+        \hline
+    \end{tabular}}
+
+    \vspace{3mm}
+
+    \begin{minipage}{\textwidth}
+        \fontsize{9pt}{13pt}\selectfont
+        \textit{Note.} 突破比率（\%），名義突破率分別為 1\%、2.5\%、5\%。
+        \textsuperscript{\dag} 表示 Kupiec POF 檢定在 5\% 顯著水準下拒絕虛無假設（突破次數過少，VaR 系統性高估）。
+        \textsuperscript{$\ddagger$} 表示 Kupiec POF 檢定在 5\% 顯著水準下拒絕虛無假設（突破次數過多，VaR 系統性低估）。
+        本表符號採 Kupiec POF 檢定判定，確保三個分位數標準一致；
+        表~\ref{tab:breach_1pct} 之 ‡ 另採突破比率超過 2\% 之固定門檻，第 1\% 列標記略有差異。
+        USD/TWD 樣本外觀測數 1{,}470 筆；其餘幣別均為 1{,}565 筆。資料來源：本研究計算。
+    \end{minipage}
+\end{table}
+% ─────────────────────────────────────
+
+\paragraph{傳統基準模型}
+
+傳統基準模型在跨分位數的校準表現上存在顯著差異，部分模型能維持穩定的風險覆蓋，而部分則隨信心水準變動產生系統性偏誤。
+
+各模型表現中，FHS-GARCH 在 3 個分位數下的突破比率均接近名義水準，其 2.5\% 與 5\% 分位數全部通過 Kupiec 檢定，為傳統基準組中跨分位數校準相對均衡的模型。GJR-GARCH 的保守估計傾向隨分位數水準提高而加劇，在 1\% 信心水準下僅有 1 個幣別顯著高估，但至 2.5\% 與 5\% 分位數時，分別增加至 5 個與 6 個幣別，反映 Student-$t$ 厚尾假設在高信心水準下會造成較為顯著的 VaR 高估。RiskMetrics 在 1\% 信心水準下，全部 7 個幣別均遭 Kupiec 檢定拒絕（過度突破），而在 5\% 水準則全數恢復通過，顯示 EWMA 常態假設的侷限主要集中於 1\% 尾部分位數。
+
+\paragraph{QR-IM 模型}
+
+QR-IM 模型在較高的分位數（2.5\% 與 5\%）下展現出相對穩定的檢定通過率，但在高波動環境中仍存在微幅高估突破比率的情形。
+
+在 2.5\% 與 5\% 分位數下，跨幣別幾乎通過 Kupiec 檢定，僅 USD/TWD 在 2.5\% 水準呈現顯著的保守估計，此現象主要反映管制匯率市場的低波動特性。然而，EUR/USD 在 2.5\% 的突破比率（3.26\%）仍相對偏高，顯示線性條件分位數模型在應對高波動期間的尾部動態時存在侷限；與集成學習模型相比，QR-IM 在 2.5\% 分位數下的超額突破現象較為普遍。
+
+\paragraph{集成學習模型}
+
+集成學習模型在跨分位數校準上普遍優於傳統與線性模型，但演算法間的內部設定差異仍使部分模型呈現偏誤。
+
+各模型表現中，XGBoost 的保守估計貫穿 3 個分位數，在 1\%、2.5\% 與 5\% 水準下，分別有 5 個、4 個與 2 個幣別呈現顯著保守，顯示其資本計提效率較低的情況橫跨整個信心水準區間。LightGBM 在 3 個分位數下均以 USD/CAD 與 USD/TWD 兩幣別為主要異常對象，跨分位數的異常幣別組成穩定，反映此為特定幣別的市場結構特徵而非模型設定問題。如表~\ref{tab:breach_all_q} 針對代表性模型的比較所示，LightGBM 在 EUR/USD 於 2.5\% 的突破比率為 2.04\%，5\% 為 4.09\%，跨分位數的一致性相對較高；而 QR-IM 的 2.5\% 突破比率系統性偏高，這進一步展現了集成學習在捕捉非線性動態上的相對優勢。
+
+% ────────────────────────────────
+\begin{table}[htbp]
+    \centering
+    \linespread{1.2}\selectfont
+    \renewcommand{\arraystretch}{1.2}
+    \fontsize{8pt}{11pt}\selectfont
+    \vspace{3mm}
+    \caption{LightGBM、CatBoost 與 QR-IM 跨分位數突破比率比較}
+    \label{tab:breach_all_q}
+    \resizebox{\textwidth}{!}{%
+    \begin{tabular}{llccccccc}
+        \hline
+        \textbf{模型} & \textbf{分位數} & \textbf{EUR/USD} & \textbf{GBP/USD} & \textbf{USD/JPY}
+        & \textbf{USD/CAD} & \textbf{AUD/USD} & \textbf{USD/CHF} & \textbf{USD/TWD} \\
+        \hline
+        \multirow{3}{*}{LightGBM}
+          & $1\%$   & 0.77 & 0.89 & 0.70 & 0.51 & 0.83 & 0.70 & 0.27 \\
+          & $2.5\%$ & 2.04 & 2.30 & 2.17 & 1.85 & 2.36 & 1.53 & 1.29 \\
+          & $5\%$   & 4.09 & 4.22 & 4.09 & 3.77 & 4.54 & 4.28 & 3.47 \\
+        \hline
+        \multirow{3}{*}{CatBoost}
+          & $1\%$   & 0.89 & 1.15 & 0.77 & 1.09 & 0.96 & 0.96 & 0.54 \\
+          & $2.5\%$ & 2.49 & 2.81 & 2.49 & 2.75 & 2.49 & 1.92 & 1.70 \\
+          & $5\%$   & 4.98 & 4.86 & 5.05 & 5.24 & 4.66 & 5.11 & 4.42 \\
+        \hline
+        \multirow{3}{*}{QR-IM}
+          & $1\%$   & 1.47 & 1.53 & 1.15 & 1.53 & 1.28 & 1.21 & 0.54 \\
+          & $2.5\%$ & 3.26 & 3.13 & 2.62 & 3.07 & 2.81 & 2.24 & 1.63 \\
+          & $5\%$   & 5.43 & 4.92 & 5.18 & 5.56 & 4.73 & 5.43 & 4.49 \\
+        \hline
+    \end{tabular}}
+    
+    \vspace{3mm}
+    
+    \begin{minipage}{\textwidth}
+        \fontsize{9pt}{13pt}\selectfont
+        \textit{Note.} 突破比率（\%）。資料來源：本研究計算。
+    \end{minipage}
+\end{table}
+% ────────────────────────────────
+
+
+\paragraph{深度學習模型}
+
+深度學習模型在跨分位數預測中面臨顯著的校準挑戰，部分架構未能維持分位數間的單調遞增特性，出現預測值重疊或顯著分歧的現象。
+
+LSTM 架構在跨分位數預測上呈現出明顯的結構性差異，以 USD/CAD 為例，其 1\% 與 2.5\% 分位數的樣本外突破次數完全相同（各 16 次，突破比率均為 1.02\%），而 5\% 分位數僅為 1.41\%，如表~\ref{tab:lstm_collapse} 所確認。
+
+% ──────────────────────────────
+\begin{table}[htbp]
+    \centering
+    \linespread{1.2}\selectfont
+    \renewcommand{\arraystretch}{1.2}
+    \fontsize{11pt}{15pt}\selectfont
+    \vspace{3mm}
+    \caption{LSTM USD/CAD 殘留分位數塌縮：跨分位數突破比率}
+    \label{tab:lstm_collapse}
+    \resizebox{0.65\textwidth}{!}{%
+    \begin{tabular}{lccc}
+        \hline
+        \textbf{分位數} & \textbf{突破次數} & \textbf{突破比率（\%）} & \textbf{名義水準（\%）} \\
+        \hline
+        $1\%$   & 16 & 1.02 & 1.00 \\
+        $2.5\%$ & 16 & 1.02 & 2.50 \\
+        $5\%$   & 22 & 1.41 & 5.00 \\
+        \hline
+    \end{tabular}}
+    
+    \vspace{3mm}
+    
+    \begin{minipage}{0.65\textwidth}
+        \fontsize{9pt}{13pt}\selectfont
+        \textit{Note.} 1\% 與 2.5\% 信心水準的突破次數完全相同（各 16 次），表明模型在兩個信心水準皆出現殘留塌縮的現象，使多分位數預測實務上失去意義。
+    \end{minipage}
+\end{table}
+% ──────────────────────────────
+
+跨幣別觀察中，LSTM 呈現檢定結果分歧的現象：在 1\% 分位數下有 4 個幣別遭 Kupiec 檢定拒絕（過度突破），但在 5\% 分位數下卻有 6 個幣別遭拒絕（過度保守）。此現象反映出分位數塌縮（Quantile collapse）的影響，即 1\% 分位數的 VaR 估計不足，而 5\% 分位數的 VaR 估計則過於極端。
+
+此外，FFNN 的突破比率偏差隨分位數水準降低而擴大，以 USD/TWD 為例，突破比率由 1\% 的 8.10\% 遞增至 2.5\% 的 13.20\% 與 5\% 的 21.09\%，三個水準均遭檢定拒絕。相較之下，RNN 的跨分位數排序（如 EUR/USD 為 1.73\%、2.94\%、4.86\%）呈現合理的嚴格遞增，顯示塌縮現象在該架構中獲得部分緩解。
+
+此分位數預測的侷限在穩健性測試中持續存在，顯示其為模型訓練過程中的結構性限制。其技術原因與 \S\ref{sec:dl_training} 所述相符：$\varepsilon$-floor 雖在梯度數值層面強制了最小正值，但 3 個分位數共享隱藏層的架構使 Pinball Loss 對增量參數 $(\delta_1, \delta_2)$ 施加高度相似的梯度訊號；在特徵空間資訊量較低（如 USD/CAD 的 ATM IV 與 RR25 均不顯著，$p > .40$）的情況下，增量數值易縮減至接近 $\varepsilon$，導致 1\% 與 2.5\% 分位數的 VaR 輸出趨於一致。
+
+% ──────────────────────────────
+\subsection{突破加總}
+\label{sec:perf_sumifbreach}
+% ──────────────────────────────
+
+突破加總（Sum if Breach，$\mathrm{SiB}$）依式 \ref{eq:sib} 定義，衡量 VaR 突破事件發生時，實現損失值與預測損失值之間差值的累計規模。SiB 絕對值越小，表示模型在突破發生時的損失估計越接近實際損失，反映較高的尾部校準精度。表~\ref{tab:sum_if_breach} 呈現各模型在 1\% 信心水準下的突破加總結果。
+
+\begin{table}[htbp]
+    \centering
+    \linespread{1.2}\selectfont
+    \renewcommand{\arraystretch}{1.2}
+    \fontsize{10pt}{14pt}\selectfont
+    \vspace{3mm}
+    \caption{主要模型 1\% 信心水準下的突破加總（Sum if Breach）}
+    \label{tab:sum_if_breach}
+    \resizebox{\textwidth}{!}{%
+    \begin{tabular}{lccccccc}
+        \hline
+        \textbf{模型} & \textbf{EUR/USD} & \textbf{GBP/USD} & \textbf{USD/JPY}
+        & \textbf{USD/CAD} & \textbf{AUD/USD} & \textbf{USD/CHF} & \textbf{USD/TWD} \\
+        \hline
+        \multicolumn{8}{l}{\textit{傳統基準模型}} \\
+        HS              & $-0.0803$ & $-0.1162$ & $-0.1517$ & $-0.0748$ & $-0.1546$ & $-0.1179$ & $-0.0854$ \\
+        RiskMetrics     & $-0.0817$ & $-0.1562$ & $-0.1961$ & $-0.0717$ & $-0.1788$ & $-0.1419$ & $-0.1015$ \\
+        GJR-GARCH       & $-0.0273$ & $-0.0564$ & $-0.0506^{*}$ & $-0.0148$ & $-0.0939$ & $-0.0498$ & $-0.0396$ \\
+        FHS-GARCH       & $-0.0568$ & $-0.0795$ & $-0.1214$ & $-0.0372$ & $-0.1169$ & $-0.0900$ & $-0.0714$ \\
+        FHS-IV          & $-0.0441$ & $-0.0836$ & $-0.1429$ & $-0.0300$ & $-0.1159$ & $-0.0876$ & $-0.0663$ \\
+        \hline
+        \multicolumn{8}{l}{\textit{分位數回歸模型}} \\
+        QR-IM           & $-0.0334$ & $-0.0926$ & $-0.0905$ & $-0.0387$ & $-0.0908$ & $-0.0746$ & $-0.0352$ \\
+        \hline
+        \multicolumn{8}{l}{\textit{集成學習模型}} \\
+        RandomForest    & $-0.0263$ & $-0.0746$ & $-0.0861$ & $-0.0372$ & $-0.0852$ & $-0.0679$ & $-0.0364$ \\
+        XGBoost         & $-0.0011^{*}$ & $-0.0438^{*}$ & $-0.0596$ & $-0.0110^{*}$ & $-0.0614^{*}$ & $-0.0384$ & $-0.0345$ \\
+        LightGBM        & $-0.0158$ & $-0.0666$ & $-0.0737$ & $-0.0198$ & $-0.0794$ & $-0.0369^{*}$ & $-0.0333^{*}$ \\
+        CatBoost        & $-0.0193$ & $-0.0647$ & $-0.0809$ & $-0.0258$ & $-0.0739$ & $-0.0585$ & $-0.0379$ \\
+        \hline
+        \multicolumn{8}{l}{\textit{深度學習模型}} \\
+        FFNN            & $-0.0328$ & $-0.2739$ & $-0.2242$ & $-0.3181$ & $-0.1287$ & $-0.1391$ & $-0.3178$ \\
+        RNN             & $-0.0463$ & $-0.2427$ & $-0.2166$ & $-0.0927$ & $-0.1537$ & $-0.1608$ & $-0.1069$ \\
+        LSTM            & $-0.0367$ & $-0.1674$ & $-0.1481$ & $-0.0423$ & $-0.1362$ & $-0.1186$ & $-0.0846$ \\
+        \hline
+    \end{tabular}}
+ 
+    \vspace{3mm}
+ 
+    \begin{minipage}{\textwidth}
+        \fontsize{9pt}{13pt}\selectfont
+        \textit{Note.} $\mathrm{SiB}_{q} = \sum_{t=1}^{T}(r_t - \widehat{Q}_{q}^{t})\cdot\mathbf{1}[r_t < \widehat{Q}_{q}^{t}]$，
+        以對數報酬率衡量，數值越接近零代表模型尾部損失校準精度越高。
+        $^{*}$ 標示各幣別絕對值最小者；惟 XGBoost 與 GJR-GARCH 之突破比率系統性低於名義水準
+        （見表~\ref{tab:breach_1pct}），其較小的 SiB 部分源於突破次數不足，應與突破比率並讀解釋。樣本外預測期為 2020 年 1 月--2025 年 12 月。
+        USD/TWD 樣本外觀測數 1{,}470 筆；其餘幣別均為 1{,}565 筆。資料來源：本研究計算。
+    \end{minipage}
+\end{table}
+
+\paragraph{傳統基準模型}
+
+傳統基準模型在尾部損失估計上呈現不同程度的校準精度。總體而言，分位數迴歸模型在多數幣別的表現優於傳統模型，但仍遜於部分集成學習算法；而傳統模型中，GJR-GARCH 的極低數值則源於過度保守估計。
+
+\paragraph{QR-IM 模型}
+
+QR-IM 的 SiB 絕對值在多數幣別低於歷史模擬法與 RiskMetrics，此結果與分位數迴歸直接估計尾部分佈的特性相符，但其精度仍不及 LightGBM 及 CatBoost。在傳統模型方面，解讀 GJR-GARCH 的結果時須加以區別：其較低的 SiB 絕對值主要源於突破次數系統性低於名義水準，而非突破發生時的損失估計精確度有所提升。
+
+\paragraph{集成學習模型}
+
+集成學習模型在尾部損失規模的控制上整體展現了較佳的校準精度，但在個別演算法間存在顯著的分歧。
+
+在突破頻率較合理的模型中，LightGBM 與 CatBoost 的 SiB 絕對值普遍低於傳統基準模型，顯示樹狀模型在兼顧覆蓋率與尾部精度方面具有結構性優勢。相對地，XGBoost 雖然呈現極小的 SiB 絕對值，但如同前述 GJR-GARCH 的情形，此極端數值係因突破次數過少所致，其實質意義在於保守估計而非精度提升，因此應與突破比率並列解讀。
+
+\paragraph{深度學習模型}
+
+深度學習模型在極端事件發生時，其尾部損失規模呈現顯著偏高的現象，顯示其預測值大幅偏離實際損失。
+
+以 FFNN 為例，其在 GBP/USD、USD/CAD 與 USD/TWD 的 SiB 絕對值分別達到傳統歷史模擬法的 2.4 倍、4.3 倍及 3.7 倍。此規模上的大幅偏誤，與前節所記錄的高突破比率相互印證，確認了深度學習架構對 VaR 的系統性低估同時體現於突破頻率與損失規模兩個維度，在實務上將引發實質的資本計提不足風險。
+
+% ────────────────────────────
+\subsection{未突破加總}
+\label{sec:perf_sumifnobreach}
+% ────────────────────────────
+
+為了完整評估模型是否存在過度保守的 VaR 高估，進而導致資本計提效率低落的問題，表~\ref{tab:sum_if_no_breach} 呈現各模型在 1\% 信心水準下的未突破加總（SiNB）。SiNB 越大，代表在未發生突破的交易日中，模型設定的 VaR 緩衝顯著超出實際損失，意即資本計提效率較差。
+
+\begin{table}[htbp]
+    \centering
+    \linespread{1.2}\selectfont
+    \renewcommand{\arraystretch}{1.2}
+    \fontsize{10pt}{14pt}\selectfont
+    \caption{主要模型 1\% 信心水準下的未突破加總（Sum if No Breach）}
+    \label{tab:sum_if_no_breach}
+    \vspace{3mm}
+    \resizebox{\textwidth}{!}{%
+    \begin{tabular}{lccccccc}
+        \hline
+        \textbf{模型} & \textbf{EUR/USD} & \textbf{GBP/USD} & \textbf{USD/JPY}
+        & \textbf{USD/CAD} & \textbf{AUD/USD} & \textbf{USD/CHF} & \textbf{USD/TWD} \\
+        \hline
+        \multicolumn{8}{l}{\textit{傳統基準模型}} \\
+        HS              & 16.81 & 22.87 & 24.44 & 17.07 & 26.62 & 18.97 & 10.01 \\
+        RiskMetrics     & 16.50 & 19.09 & 20.86 & 14.73 & 23.30 & 17.13 &  8.82 \\
+        GJR-GARCH       & 19.85 & 24.67 & 30.66 & 17.40 & 27.26 & 23.77 & 14.38 \\
+        FHS-GARCH       & 17.50 & 23.45 & 23.92 & 15.49 & 26.50 & 20.20 & 10.39 \\
+        FHS-IV          & 15.71 & 19.22 & 20.12 & 15.17 & 23.60 & 18.65 &  9.41 \\
+        \hline
+        \multicolumn{8}{l}{\textit{分位數回歸模型}} \\
+        QR-IM           & 15.84 & 21.10 & 22.73 & 14.37 & 24.26 & 19.20 & 12.09 \\
+        \hline
+        \multicolumn{8}{l}{\textit{集成學習模型}} \\
+        RandomForest    & 16.26 & 21.93 & 23.22 & 14.46 & 24.65 & 19.59 & 12.18 \\
+        XGBoost         & 23.76 & 27.62 & 28.90 & 20.77 & 30.88 & 25.92 & 14.17 \\
+        LightGBM        & 18.45 & 24.76 & 25.28 & 18.49 & 26.17 & 23.34 & 14.15 \\
+        CatBoost        & 17.14 & 22.53 & 23.83 & 15.33 & 25.69 & 20.54 & 12.37 \\
+        \hline
+        \multicolumn{8}{l}{\textit{深度學習模型}} \\
+        FFNN            & 16.01 & 16.37 & 17.69 & 12.91 & 22.23 & 15.72 &  5.70 \\
+        RNN             & 15.23 & 16.32 & 17.17 & 13.57 & 21.46 & 15.38 &  8.52 \\
+        LSTM            & 17.27 & 18.62 & 19.86 & 17.86 & 23.19 & 16.86 &  8.83 \\
+        \hline
+    \end{tabular}}
+
+    \vspace{3mm}
+    \begin{minipage}{\textwidth}
+        \fontsize{9pt}{13pt}\selectfont
+        \textit{Note.} $\mathrm{SiNB} = \sum_{t=1}^{T}(\widehat{Q}_{\alpha}^{t} + r_t)\cdot\mathbf{1}[r_t \geq -\widehat{Q}_{\alpha}^{t}]$，以對數報酬率衡量，數值越小代表模型 VaR 越貼近實際（越不保守）。樣本外預測期為 2020 年 1 月--2025 年 12 月。XGBoost 在全部 7 個幣別的 SiNB 均最高，確認其監理合規係以 VaR 系統性高估達成；LightGBM 與 CatBoost 的 SiNB 介於合理範圍，呈現最佳的覆蓋精度與資本效率平衡。深度學習模型雖 SiNB 偏低，但突破比率系統性超額（見表~\ref{tab:breach_1pct}），係另一種失衡。資料來源：本研究計算。
+    \end{minipage}
+\end{table}
+
+\paragraph{傳統基準模型}
+
+傳統模型在未突破加總的表現上，反映出不同程度的資本計提效率，其中具備厚尾假設的模型往往伴隨較高的資金閒置成本。
+
+GJR-GARCH 在多數幣別呈現較高的 SiNB（如 USD/JPY 達 30.66），此現象與其突破比率系統性低於名義水準的結果一致，顯示其為傳統基準組別中資本計提效率相對較低的模型。
+
+\paragraph{QR-IM 模型}
+
+QR-IM 模型與多數傳統模型的 SiNB 則落在中等區間，能夠維持合理的資本效率。
+
+\paragraph{集成學習模型}
+
+集成學習模型在資本效率的表現上呈現兩極化的特徵，部分模型能維持合理的資本緩衝，而 XGBoost 則同樣存在系統性高估的問題。
+
+LightGBM 與 CatBoost 的 SiNB 落在合理範圍內，這表明其在達成監理合規標準的同時，並未以過度保守換取低突破率，反映出較均衡的覆蓋精度與資本效率。相反地，XGBoost 在全數 7 個幣別的 SiNB 均為所有模型中最高，進一步確認了其巴塞爾監理綠燈評級是以 VaR 系統性高估所達成，導致過度占用金融機構的資本緩衝。
+
+\paragraph{深度學習模型}
+
+深度學習模型普遍呈現較低的 SiNB，但此現象並非源自優異的資本效率，而是另一種類型的校準偏誤。
+
+FFNN 與 RNN 等架構的 SiNB 數值顯著偏低，其原因在於突破比率系統性超過名義水準；頻繁的 VaR 突破導致未發生突破的交易日相對減少，進而使 SiNB 數值受到壓縮。這種失衡與 XGBoost 的保守估計相反，反映了模型未能提供充足的風險緩衝，因此在實務風險管理的應用上同樣面臨限制。
+
+
+% ══════════════════════════════
+\section{回測檢定結果}
+\label{sec:backtests}
+% ══════════════════════════════
+
+本節彙整各模型的統計回測檢定結果，尤其聚焦於 1\% 信心水準，並由此擴展至全分位數的系統性比較。
+
+% ─────────────────────────────────
+\subsection{1\% 樣本外回測統計檢定}
+\label{sec:backtests_1pct}
+% ─────────────────────────────────
+
+表~\ref{tab:cctest} 呈現主要模型在 1\% 信心水準下的 CC 條件覆蓋、DQ 與 Kupiec 三項統計回測檢定 $p$ 值。
+
+% ─────────────────────────────────
+\begin{table}[htbp]
+    \centering
+    \linespread{1.1}\selectfont
+    \renewcommand{\arraystretch}{1.15}
+    \fontsize{8pt}{11pt}\selectfont
+    \vspace{3mm}
+    \caption{主要模型 1\% 信心水準下的樣本外統計回測檢定 $p$ 值}
+    \label{tab:cctest}
+    \resizebox{\textwidth}{!}{%
+    \begin{tabular}{lccccccc}
+        \hline
+        \multicolumn{8}{l}{\textit{Panel A：Christoffersen CC 條件覆蓋（$p$ 值）}} \\
+        \textbf{模型} & \textbf{EUR/USD} & \textbf{GBP/USD} & \textbf{USD/JPY} & \textbf{USD/CAD} & \textbf{AUD/USD} & \textbf{USD/CHF} & \textbf{USD/TWD} \\
+        \hline
+        FHS-GARCH       & .245 & .004\textsuperscript{***} & .326 & .230 & .155 & .140 & .002\textsuperscript{***} \\
+        FHS-IV          & .015\textsuperscript{**} & .098\textsuperscript{*} & .036\textsuperscript{**} & .326 & .003\textsuperscript{***} & .066\textsuperscript{*} & .129 \\
+        QR-IM           & .155 & .098\textsuperscript{*} & .684 & .099\textsuperscript{*} & .440 & .344 & .151 \\
+        RandomForest    & .853 & .190 & .844 & .230 & .684 & .373 & .016\textsuperscript{**} \\
+        LightGBM        & .571 & .259 & .425 & .096\textsuperscript{*} & .705 & .082\textsuperscript{*} & .000\textsuperscript{***} \\
+        CatBoost        & .804 & .373 & .571 & .783 & .853 & .318 & .016\textsuperscript{**} \\
+        \hline
+        \multicolumn{8}{l}{\textit{Panel B：動態分位數 DQ 檢定（$p$ 值，4 個落後期）}} \\
+        \textbf{模型} & \textbf{EUR/USD} & \textbf{GBP/USD} & \textbf{USD/JPY} & \textbf{USD/CAD} & \textbf{AUD/USD} & \textbf{USD/CHF} & \textbf{USD/TWD} \\
+        \hline
+        FHS-GARCH       & .022\textsuperscript{**} & .000\textsuperscript{***} & .286 & .065\textsuperscript{*} & .200 & .301 & .000\textsuperscript{***} \\
+        FHS-IV          & .291 & .051\textsuperscript{*} & .184 & .040\textsuperscript{**} & .860 & .643 & .038\textsuperscript{**} \\
+        QR-IM           & .566 & .001\textsuperscript{***} & .494 & .123 & .950 & .296 & .988 \\
+        RandomForest    & .253 & .000\textsuperscript{***} & .945 & .065\textsuperscript{*} & .969 & .569 & .000\textsuperscript{***} \\
+        LightGBM        & .070\textsuperscript{*} & .000\textsuperscript{***} & .997 & .000\textsuperscript{***} & .971 & .038\textsuperscript{**} & .000\textsuperscript{***} \\
+        CatBoost        & .135 & .000\textsuperscript{***} & .683 & .002\textsuperscript{***} & .907 & .305 & .000\textsuperscript{***} \\
+        \hline
+        \multicolumn{8}{l}{\textit{Panel C：Kupiec 無條件覆蓋（$p$ 值）}} \\
+        \textbf{模型} & \textbf{EUR/USD} & \textbf{GBP/USD} & \textbf{USD/JPY} & \textbf{USD/CAD} & \textbf{AUD/USD} & \textbf{USD/CHF} & \textbf{USD/TWD} \\
+        \hline
+        FHS-GARCH       & .196 & .128 & .196 & .128 & .081\textsuperscript{*} & .081\textsuperscript{*} & .044\textsuperscript{**} \\
+        FHS-IV          & .005\textsuperscript{***} & .049\textsuperscript{**} & .016\textsuperscript{**} & .196 & .001\textsuperscript{***} & .029\textsuperscript{**} & .075\textsuperscript{*} \\
+        QR-IM           & .081\textsuperscript{*} & .049\textsuperscript{**} & .560 & .049\textsuperscript{**} & .289 & .410 & .055\textsuperscript{*} \\
+        RandomForest    & .868 & .128 & .929 & .128 & .560 & .560 & .055\textsuperscript{*} \\
+        LightGBM        & .334 & .670 & .212 & .032\textsuperscript{**} & .488 & .212 & .001\textsuperscript{***} \\
+        CatBoost        & .670 & .560 & .334 & .735 & .868 & .868 & .055\textsuperscript{*} \\
+        \hline
+    \end{tabular}}
+
+    \vspace{3mm}
+
+    \begin{minipage}{\textwidth}
+        \fontsize{9pt}{13pt}\selectfont
+        \textit{Note.} 高 $p$ 值表示無法拒絕統計回測虛無假設（模型通過）。\textsuperscript{***}、\textsuperscript{**}、\textsuperscript{*} 分別代表在 1\%、5\%、10\% 顯著水準下拒絕。樣本外預測期為 2020 年 1 月--2025 年 12 月。
+        Panel A：CC 條件覆蓋檢定（Christoffersen, 1998）評估突破序列獨立性。
+        Panel B：DQ 動態分位數檢定採 4 個落後期（Engle \& Manganelli, 2004）。
+        Panel C：Kupiec POF 無條件覆蓋檢定直接評估突破比率是否偏離名義水準。
+        USD/TWD 的系統性拒絕主要反映部分管制匯率的特殊低波動性。資料來源：本研究計算。
+    \end{minipage}
+\end{table}
+% ─────────────────────────────────
+
+在 1\% 信心水準下，各模型的統計回測表現顯示，儘管多數模型在無條件覆蓋（Kupiec）與條件覆蓋（CC）檢定上具備一定的穩健性，但特定宏觀事件衝擊仍會引發短暫的尾部波動群集，導致部分幣別在動態分位數（DQ）檢定中遭到顯著拒絕。
+
+表~\ref{tab:cctest} 的 Panel B 揭示了此類外部衝擊在不同幣別間的結構性影響。以 GBP/USD 為例，其在多個集成模型下的 DQ 檢定均呈現顯著拒絕（$p \approx .000$）。此現象主要源於 2022 年 9 月英國迷你預算危機所引發的極端波動，導致測試期間形成強烈的突破群集效應，使模型難以於短時間內完全消化。然而，考量這些模型的實際突破比率仍貼近名義水準且通過 CC 檢定，上述 DQ 失敗應解讀為事件驅動的短暫群集現象，而非系統性的模型設定偏誤。
+
+類似的市場衝擊效應也可見於 USD/CAD，其在部分模型（如 LightGBM 與 CatBoost）的 DQ 檢定未通過，反映了 2022 年能源市場劇震對加幣造成的集中影響。相對於受宏觀事件驅動的自由浮動貨幣，USD/TWD 則在全數模型與多項檢定中呈現系統性拒絕；此結果並非模型預測失效，而是印證了該幣別作為管制匯率所具備的特殊低波動特性，使其尾部動態難以契合統計檢定的獨立性與常態假設。
+
+
+% ─────────────────────────────────
+\subsection{全分位數樣本外回測統計檢定}
+\label{sec:backtests_allq}
+% ─────────────────────────────────
+
+表~\ref{tab:backtests_allq} 聚焦 Kupiec 無條件覆蓋檢定，呈現主要模型在 1\%、2.5\% 與 5\% 3 個分位數水準下的突破比率是否偏離名義水準。
+
+\begin{table}[htbp]
+    \centering
+    \linespread{1.1}\selectfont
+    \renewcommand{\arraystretch}{1.2}
+    \fontsize{8pt}{11pt}\selectfont
+    \vspace{3mm}
+    \caption{主要模型 3 個分位數的 Kupiec 無條件覆蓋檢定 $p$ 值}
+    \label{tab:backtests_allq}
+    \resizebox{\textwidth}{!}{%
+    \begin{tabular}{llccccccc}
+        \hline
+        \textbf{模型} & \textbf{$q$} & \textbf{EUR/USD} & \textbf{GBP/USD}
+        & \textbf{USD/JPY} & \textbf{USD/CAD} & \textbf{AUD/USD}
+        & \textbf{USD/CHF} & \textbf{USD/TWD} \\
+        \hline
+        \multicolumn{9}{l}{\textit{傳統基準模型}} \\
+        \multirow{3}{*}{FHS-GARCH}     & $1\%$      & .196 & .128 & .196 & .128 & .081\textsuperscript{*} & .081\textsuperscript{*} & .044\textsuperscript{**} \\
+                                       & $2.5\%$    & .645 & .066\textsuperscript{*} & .763 & .645 & .353 & .279 & .391 \\
+                                       & $5\%$      & .666 & .440 & .183 & .267 & .751 & .440 & .858 \\
+        \cline{2-9}
+        \multirow{3}{*}{FHS-IV}        & $1\%$      & .005\textsuperscript{***} & .049\textsuperscript{**} & .016\textsuperscript{**} & .196 & .001\textsuperscript{***} & .029\textsuperscript{**} & .075\textsuperscript{*} \\
+                                       & $2.5\%$    & .015\textsuperscript{**} & .066\textsuperscript{*} & .023\textsuperscript{**} & .984 & .091\textsuperscript{*} & .165 & .100 \\
+                                       & $5\%$      & .666 & .060\textsuperscript{*} & .060\textsuperscript{*} & .704 & .076\textsuperscript{*} & .149 & .594 \\
+        \cline{2-9}
+        \hline
+        \multicolumn{9}{l}{\textit{分位數回歸模型}} \\
+        \multirow{3}{*}{QR-IM}         & $1\%$      & .081\textsuperscript{*} & .049\textsuperscript{**} & .560 & .049\textsuperscript{**} & .289 & .410 & .055\textsuperscript{*} \\
+                                       & $2.5\%$    & .066\textsuperscript{*} & .124 & .763 & .165 & .439 & .497 & .023\textsuperscript{**} \\
+                                       & $5\%$      & .440 & .884 & .751 & .318 & .619 & .440 & .361 \\
+        \cline{2-9}
+        \hline
+        \multicolumn{9}{l}{\textit{集成學習模型}} \\
+        \multirow{3}{*}{RandomForest}  & $1\%$      & .868 & .128 & .929 & .128 & .560 & .560 & .055\textsuperscript{*} \\
+                                       & $2.5\%$    & .645 & .439 & .855 & .439 & .984 & .308 & .037\textsuperscript{**} \\
+                                       & $5\%$      & .840 & .884 & .793 & .440 & .463 & .840 & .198 \\
+        \cline{2-9}
+        \multirow{3}{*}{LightGBM}      & $1\%$      & .334 & .670 & .212 & .032\textsuperscript{**} & .488 & .212 & .001\textsuperscript{***} \\
+                                       & $2.5\%$    & .234 & .608 & .396 & .086\textsuperscript{*} & .728 & .008\textsuperscript{***} & .001\textsuperscript{***} \\
+                                       & $5\%$      & .088\textsuperscript{*} & .145 & .088\textsuperscript{*} & .020\textsuperscript{**} & .393 & .181 & .004\textsuperscript{***} \\
+        \cline{2-9}
+        \multirow{3}{*}{CatBoost}      & $1\%$      & .670 & .560 & .334 & .735 & .868 & .868 & .055\textsuperscript{*} \\
+                                       & $2.5\%$    & .984 & .439 & .984 & .537 & .984 & .124 & .037\textsuperscript{**} \\
+                                       & $5\%$      & .977 & .793 & .931 & .666 & .538 & .840 & .300 \\
+        \cline{2-9}
+        \hline
+    \end{tabular}}
+
+    \vspace{3mm}
+    \begin{minipage}{\textwidth}
+        \fontsize{9pt}{13pt}\selectfont
+        \textit{Note.} Kupiec POF 虛無假設為突破比率等於名義水準。高 $p$ 值表示無法拒絕（模型通過）。
+        \textsuperscript{***}、\textsuperscript{**}、\textsuperscript{*} 分別代表在 1\%、5\%、10\%
+        顯著水準下拒絕。樣本外預測期為 2020 年 1 月--2025 年 12 月。USD/TWD 觀測數 1{,}470 筆；其餘 1{,}565 筆。資料來源：本研究計算。
+    \end{minipage}
+\end{table}
+
+傳統基準與 QR-IM 模型在跨分位數的檢定通過率上呈現明顯的結構性差異，且多數模型的低估問題集中於深尾部分。以 QR-IM 為例，其在 1\% 水準下數個幣別出現邊緣拒絕，但至 2.5\% 與 5\% 水準後通過率顯著改善，此現象反映分位數迴歸在極端尾部的校準難度高於中間分位數，與模型的理論設定相符。類似地，FHS-IV 的 Kupiec 拒絕亦集中於 1\%，隨分位數上移至 5\% 後大幅緩解，確認其尾部低估主要發生在最極端的損失區域。
+
+集成學習模型在 3 個分位數下的檢定結果相對穩健，其中樹狀演算法在跨分位數的適應力上展現了高度一致性。具體而言，CatBoost 在 3 個分位數均維持最為穩健的表現，多數幣別的 $p$ 值遠高於顯著門檻。LightGBM 與 RandomForest 兩者的整體檢定趨勢相近，跨分位數表現亦屬穩健，唯獨在特定幣別（如 USD/TWD）於 1\% 至 2.5\% 水準下出現檢定通過率略見弱化的情形。
+
+
+% ═══════════════════════════════
+\section{巴塞爾紅綠燈監理評估}
+\label{sec:basel_assessment}
+% ═══════════════════════════════
+
+表~\ref{tab:basel} 依巴塞爾紅綠燈機制，以最後 250 個樣本外交易日內的 1\% VaR 突破次數評估各模型的監理合適性：$\leq 4$ 次為綠色，5–9 次為黃色，$\geq 10$ 次為紅色。
+
+\begin{table}[htbp]
+    \centering
+    \linespread{1.2}\selectfont
+    \renewcommand{\arraystretch}{1.2}
+    \fontsize{11pt}{15pt}\selectfont
+    \vspace{3mm}
+    \caption{各模型 1\% 信心水準的巴塞爾紅綠燈評級}
+    \label{tab:basel}
+    \begin{tabular}{lcccccccl}
+        \hline
+        \textbf{模型} & \textbf{EUR} & \textbf{GBP} & \textbf{JPY}
+        & \textbf{CAD} & \textbf{AUD} & \textbf{CHF} & \textbf{TWD} & \textbf{綠燈率} \\
+        \hline
+        \multicolumn{9}{l}{\textit{傳統基準模型}} \\
+        HS           & G & G & G & G & G & G & Y & 6/7 \\
+        RiskMetrics  & G & G & G & Y & G & G & Y & 5/7 \\
+        GJR-GARCH    & G & G & G & G & G & G & G & 7/7 \\
+        FHS-GARCH    & G & G & G & G & G & G & Y & 6/7 \\
+        FHS-IV       & G & G & Y & G & G & G & Y & 5/7 \\
+        \hline
+        \multicolumn{9}{l}{\textit{分位數回歸模型}} \\
+        QR-IM        & G & G & G & G & G & G & G & 7/7 \\
+        \hline
+        \multicolumn{9}{l}{\textit{集成學習模型}} \\
+        RandomForest & G & G & G & G & G & G & G & \textbf{7/7} \\
+        XGBoost      & G & G & G & G & G & G & G & \textbf{7/7} \\
+        LightGBM     & G & G & G & G & G & G & G & \textbf{7/7} \\
+        CatBoost     & G & G & G & G & G & G & G & \textbf{7/7} \\
+        \hline
+        \multicolumn{9}{l}{\textit{深度學習模型（$\varepsilon$-floor 部分緩解）}} \\
+        FFNN         & G & G & Y & R & G & Y & R & 3/7 \\
+        RNN          & G & Y & Y & G & G & Y & R & 3/7 \\
+        LSTM         & G & G & Y & G & G & Y & Y & 4/7 \\
+        \hline
+    \end{tabular}
+
+    \vspace{2mm}
+
+    \begin{minipage}{0.85\textwidth}
+        \fontsize{9pt}{13pt}\selectfont
+        \textit{Note.} G = 綠色（突破次數 $\leq 4$），Y = 黃色（5–9 次），R = 紅色（$\geq 10$ 次）。
+        評估視窗為樣本外期間最後 250 個交易日（並非全部 OOS 期間）。
+        「綠燈率」為 7 個貨幣對中取得綠色評級的比率。
+        資料來源：本研究計算。
+    \end{minipage}
+\end{table}
+% ─────────────────────────────────
+
+\paragraph{傳統基準模型}
+
+傳統基準模型在監理評估上多能達到合規門檻，但部分模型的綠燈評級係建立在資本過度閒置的基礎上。
+
+GJR-GARCH 達成 7/7 的最高綠燈標準；然而，GJR-GARCH 的突破比率系統性低於名義水準，其監理合規的代價為資本效率的顯著低落。在其他傳統模型中，FHS-GARCH 與歷史模擬法（HS）以 6/7 綠燈並列較佳表現，共同的弱點為 USD/TWD 落入黃色區間；而 FHS-IV 則因 USD/JPY 突破次數偏高，被降級至 5/7 綠燈。
+
+\paragraph{QR-IM 模型}
+
+QR-IM 達成 7/7 的最高綠燈標準，並且綠燈評級並未建立在犧牲資本效率之上。
+
+\paragraph{集成學習模型}
+
+集成學習模型在監理評估中展現了最優異且一致的表現，全數演算法均達成最高評級，但在實務的資本效率上仍存有差異。
+
+RandomForest、XGBoost、LightGBM 與 CatBoost 均在全數 7 個貨幣對取得綠燈評級（7/7）。在同達滿分綠燈的模型中，LightGBM 憑藉最接近名義水準的突破比率實現此評級，成功在資本效率與風險覆蓋之間取得最佳平衡。相對而言，XGBoost 雖形式上符合監理要求，但其達成方式係依賴 VaR 的系統性高估，導致實際的資本計提效率顯著偏低。
+
+\paragraph{深度學習模型}
+
+深度學習模型在監理評估上呈現較大的分歧與隱憂，整體表現未能通過多數主要貨幣對的監理標準。
+
+LSTM 雖取得該組別最高的 4/7 綠燈，但其在特定幣別（如 USD/CAD）遭遇的分位數塌縮問題（詳見表~\ref{tab:lstm_collapse}），使多信心水準的 VaR 管理在實務上失去意義。FFNN 與 RNN 則雙雙僅獲得 3/7 綠燈，且均在 USD/TWD 觸及最差的紅色門檻；FFNN 更進一步在 USD/CAD 落入紅色警戒區，顯示其尾部分佈的捕捉能力在應對不同幣別特性時存在嚴重的適應不良。
+
+% ════════════════════════════════════
+\section{綜合討論}
+\label{sec:comparison}
+% ════════════════════════════════════
+
+綜觀突破比率、尾部損失規模、統計回測與巴塞爾監理評估四個維度，本章實證結果確認了選擇權隱含資訊作為前瞻性風險因子的有效性。QR-IM 模型藉由整合此二特徵，整體預測效能顯著優於歷史模擬法與 RiskMetrics 等傳統基準，但在應對連續系統性衝擊的 1\% 極端尾部時，其線性架構仍顯適應性不足。相較之下，集成學習模型（特別是 LightGBM 與 CatBoost）展現了優異的非線性特徵挖掘能力，不僅在全分位數空間內維持極高的統計檢定通過率，更在尾部損失精度（SiB）與資本計提效率（SiNB）之間取得了最佳平衡。
+
+此外，實證結果揭露了風險管理實務上監理合規與資本效率的權衡。部分模型雖達成巴塞爾最高監理標準，卻是以犧牲金融機構資金效率為代價；例如 GJR-GARCH 與 XGBoost 雖取得 7/7 綠燈評級，但其突破比率系統性偏低且 SiNB 顯著偏高，反映其合規是建立在 VaR 估計的過度保守之上。另一方面，深度學習模型在低維特徵空間的設定下暴露出結構性弱點；儘管經過單調性架構修正，LSTM 仍遭遇分位數塌縮問題，而 FFNN 與 RNN 則呈現系統性的尾部風險低估，制約了其作為外匯內部 VaR 模型的實務可行性。
+
+總結而言，本章在更具挑戰性的高波動與跨幣別樣本中，進一步強化了 \citet{blom2023estimating} 關於樹狀模型優勢的結論，並界定了不同演算法在尾部風險量化上的實證邊界。下一章將進一步探討在替換特徵、更換天期與子樣本分析後的穩健性測試。

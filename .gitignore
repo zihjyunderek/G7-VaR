@@ -1,0 +1,16 @@
+# Licensed Bloomberg data never enter git; only the README is kept.
+/data/*
+!/data/README.md
+
+# Forecasts and other local run output (derived day by day from the licensed data)
+/results/runs*/
+/outputs/
+
+# Python
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.ipynb_checkpoints/
+.venv/
+catboost_info/
+.env

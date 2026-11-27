@@ -1,0 +1,188 @@
+% !TeX root = ../main.tex
+\chapter{事件研究}
+\label{chap:events}
+\label{sec:event_preview}
+前述章節已透過統計回測與巴塞爾監理標準，確立了各模型在長期間樣本外的總體預測表現，並在測試中驗證了模型的穩健性。然而，全期平均的突破比率往往會掩蓋模型在應對短期、極端外生衝擊時的真實反應能力，為彌補宏觀統計指標的侷限，本章導入事件研究，在微觀時間尺度下，動態檢視模型於黑天鵝事件前後的風險預測邊界與實際損失之契合度。
+
+% ======================================
+\section{對等關稅衝擊}
+\label{sec:ev_tariff}
+% ======================================
+
+2025 年 4 月 2 日，美國政府宣布對貿易夥伴徵收廣泛的對等關稅（Liberation Day）。由於此政策在事前已透過官方管道預告，選擇權市場得以在事件發生前將預期的尾部風險反映於隱含波動率曲面。本節以此事件作為壓力測試，評估核心特徵在極端衝擊下的風險訊號，檢視隱含波動率的前瞻傳導路徑是否穩健。
+
+表~\ref{tab:tariff_ivshift} 彙整了此次關稅事件與訓練集中 2018–2019 年中美貿易摩擦事件的隱含波動率移位幅度，表~\ref{tab:tariff_zscore} 則呈現對應標準化的 Z-score 位階。
+
+% ────────────────────────────────
+\begin{table}[htbp]
+    \centering
+    \linespread{1.2}\selectfont
+    \renewcommand{\arraystretch}{1.2}
+    \fontsize{8pt}{11pt}\selectfont
+    \vspace{3mm}
+    \caption{對等關稅前後的隱含波動率特徵移位}
+    \label{tab:tariff_ivshift}
+    \resizebox{\textwidth}{!}{%
+    \begin{tabular}{llccccccccc}
+        \hline
+        \textbf{事件} & \textbf{幣別}
+        & \textbf{ATM IV\textsubscript{pre}} & \textbf{ATM IV\textsubscript{post}} & $\Delta$\textbf{ATM IV}
+        & \textbf{RR25\textsubscript{pre}} & \textbf{RR25\textsubscript{post}} & $\Delta$\textbf{RR25}
+        & \textbf{BF25\textsubscript{pre}} & \textbf{BF25\textsubscript{post}} & $\Delta$\textbf{BF25} \\
+        \hline
+        \multirow{3}{*}{2018-07-06}
+          & EUR/USD & 7.44 & 6.28 & $-$1.16 & $-$0.51 & $-$0.40 & $+$0.11 & 0.161 & 0.163 & $+$0.002 \\
+          & USD/JPY & 6.70 & 6.15 & $-$0.55 & $-$0.91 & $-$0.37 & $+$0.54 & 0.238 & 0.231 & $-$0.007 \\
+          & AUD/USD & 8.74 & 7.68 & $-$1.06 & $-$0.60 & $-$0.52 & $+$0.08 & 0.150 & 0.151 & $+$0.001 \\
+        \hline
+        \multirow{3}{*}{2019-05-10}
+          & EUR/USD & 5.24 & 4.69 & $-$0.55 & $-$0.30 & $-$0.20 & $+$0.10 & 0.142 & 0.168 & $+$0.026 \\
+          & USD/JPY & 5.96 & 5.84 & $-$0.12 & $-$1.23 & $-$1.58 & $-$0.35 & 0.281 & 0.319 & $+$0.038 \\
+          & AUD/USD & 8.79 & 7.22 & $-$1.57 & $-$0.71 & $-$0.94 & $-$0.24 & 0.133 & 0.162 & $+$0.029 \\
+        \hline
+        \multirow{3}{*}{2019-08-23}
+          & EUR/USD & 5.08 & 5.09 & $+$0.01 & $+$0.03 & $-$0.09 & $-$0.11 & 0.160 & 0.178 & $+$0.019 \\
+          & USD/JPY & 8.28 & 8.11 & $-$0.16 & $-$1.27 & $-$1.21 & $+$0.06 & 0.221 & 0.207 & $-$0.014 \\
+          & AUD/USD & 7.66 & 7.84 & $+$0.18 & $-$0.72 & $-$0.79 & $-$0.08 & 0.164 & 0.154 & $-$0.010 \\
+        \hline
+        \multirow{3}{*}{\begin{tabular}[c]{@{}l@{}}\textbf{2025-04-02} \\ \textbf{Liberation Day}\end{tabular}}
+          & EUR/USD & 8.05 & 12.75 & \textbf{$+$4.70} & $+$0.10 & $+$0.71 & \textbf{$+$0.61} & 0.176 & 0.336 & \textbf{$+$0.161} \\
+          & USD/JPY & 9.55 & 15.17 & \textbf{$+$5.62} & $-$1.04 & $-$2.52 & \textbf{$-$1.48} & 0.156 & 0.349 & \textbf{$+$0.193} \\
+          & AUD/USD & 9.23 & 16.37 & \textbf{$+$7.15} & $-$0.64 & $-$2.01 & \textbf{$-$1.37} & 0.151 & 0.405 & \textbf{$+$0.253} \\
+        \hline
+    \end{tabular}
+    }
+    
+    \vspace{3mm}
+    
+    \begin{minipage}{\textwidth}
+        \fontsize{9pt}{13pt}\selectfont
+        \textit{Note.} ATM IV 以年化隱含波動率百分點（\%）表示；RR25 與 BF25 以波動率點表示。Pre/Post 為事件日前後各 5 個交易日的均值。\textbf{粗體}標示 Liberation Day（2025-04-02）的移位數值。資料來源：Bloomberg，本研究計算。
+    \end{minipage}
+\end{table}
+% ───────────────────────────
+
+% ─────────────────────────────
+\begin{table}[htbp]
+    \centering
+    \linespread{1.2}\selectfont
+    \renewcommand{\arraystretch}{1.2}
+    \fontsize{11pt}{15pt}\selectfont
+    \vspace{3mm}
+    \caption{對等關稅在隱含波動率全樣本的 Z-score 位階}
+    \label{tab:tariff_zscore}
+    \resizebox{0.6\textwidth}{!}{%
+    \begin{tabular}{llccc}
+        \hline
+        \textbf{事件} & \textbf{幣別}
+        & $Z_{\mathrm{ATM\,IV}}$ & $Z_{\mathrm{RR25}}$ & $Z_{\mathrm{BF25}}$ \\
+        \hline
+        \multirow{3}{*}{2018-07-06}
+          & EUR/USD & $-0.45$ & $-0.21$ & $+1.81$ \\
+          & USD/JPY & $-0.22$ & $-0.15$ & $+0.99$ \\
+          & AUD/USD & $+1.78$ & $-1.02$ & $+1.65$ \\
+        \multirow{3}{*}{2019-05-10}
+          & EUR/USD & $-0.26$ & $-0.62$ & $+0.42$ \\
+          & USD/JPY & $+2.77$ & $-2.89$ & $+1.33$ \\
+          & AUD/USD & $+1.72$ & $-5.85$ & $+0.36$ \\
+        \multirow{3}{*}{2019-08-23}
+          & EUR/USD & $-0.70$ & $-1.74$ & $+0.43$ \\
+          & USD/JPY & $+0.99$ & $+0.17$ & $-0.35$ \\
+          & AUD/USD & $+0.03$ & $-1.46$ & $+1.91$ \\
+        \hline
+        % 修正：使用嵌套的 tabular 讓文字在 multirow 內安全換行
+        \multirow{3}{*}{\begin{tabular}[c]{@{}l@{}}\textbf{2025-04-02} \\ \textbf{Liberation Day}\end{tabular}}
+          & EUR/USD & $+0.43$ & $\mathbf{+1.68}$ & $+0.78$ \\
+          % 修正：將原本的 \textbf{Liberation Day} 移除，留下空白的 & 
+          & USD/JPY & $-0.06$ & $-0.46$ & $-0.23$ \\
+          & AUD/USD & $-0.01$ & $-0.02$ & $+0.42$ \\
+        \hline
+    \end{tabular}}
+    
+    \vspace{2mm}
+    
+    \begin{minipage}{0.65\textwidth}
+        \fontsize{9pt}{13pt}\selectfont
+        \textit{Note.} Z-score 以全樣本（2009–2025）各指標日變化的均值與標準差標準化，正值代表高於歷史均值。資料來源：Bloomberg，本研究計算。
+    \end{minipage}
+\end{table}
+% ────────────────────────
+
+Liberation Day 構成了本研究樣本期間最劇烈的隱含波動率衝擊。在事件日前後，AUD/USD 與 USD/JPY 的 ATM IV 絕對移位高達 7.15\% 與 5.62\%，數倍於 2018–2019 年歷次關稅事件的波幅。然而，受標準化程序中全樣本分佈厚尾特性的影響，ATM IV 移位的 Z-score 卻相對平緩。相較之下，EUR/USD 的 RR25 移位 Z-score 達 $+1.68$，為四個事件中最高，顯示市場迅速將偏態定價朝「更強美元、更弱歐元」的方向調整；USD/JPY 與 AUD/USD 的 RR25 亦大幅向避險與貶值方向移動。同時，BF25 的絕對移位顯著高於往年，反映市場對尾部對稱風險的急劇重定價。這三個特徵的移位方向與 QR-IM 的前瞻傳導機制高度吻合：ATM IV 上升驅動更大的 VaR 邊界，RR25 與 BF25 則進一步提供方向性與峰態的估計緩衝。
+
+隱含波動率的移位最終須轉化為 VaR 預測邊界以檢驗其實用價值。圖~\ref{fig:tariff_var} 比較了 QR-IM 與歷史模擬（HS）在事件前後的 1\% VaR 下界。
+
+結果顯示，3 個貨幣對呈現了隱含波動率資訊優勢的完整光譜。在衝擊相對溫和的 USD/CAD，QR-IM 的 1\% VaR 下界成功覆蓋實際損失，而靜態的歷史模擬法邊界則遭到突破，此為選擇權市場事前定價風險的直接證據。
+
+對於承受極端拋售的 USD/CHF（$-2.60\%$）與 AUD/USD（$-4.67\%$），衝擊規模超越了 1\% VaR 的事前涵蓋範圍，導致兩模型皆被突破；但 QR-IM 邊界不僅在事前較 HS 更貼近實際損失，更在衝擊後 1 個交易日內迅速擴張（如 AUD/USD 由 $-1.65\%$ 跳升至 $-3.11\%$），展現出顯著優於歷史基準的動態適應能力。
+
+% 圖 7-1────────────────────────
+\begin{figure}[H]
+    \centering
+    \caption{對等關稅前後 1\% VaR 預測邊界與實際報酬率比較圖}
+    \label{fig:tariff_var}
+    \vspace{3mm}
+    \includegraphics[width=\textwidth]{figures/Figure 7-1.pdf}
+    \vspace{2mm}
+    \begin{minipage}{\textwidth}
+        \fontsize{9pt}{13pt}\selectfont
+        \textit{Note.} 實線為 QR-IM 之 1\% VaR 下界（以負值 $-\widehat{\mathrm{VaR}}$ 繪示），虛線為歷史模擬（HS）基準；空心圈為每日實際對數報酬率，星號為事件衝擊日之實際報酬（跌破 QR-IM 邊界者以三角標記）。灰色區域為事件宣布前窗口，垂直虛線標記 Liberation Day（4 月 2 日）。縱軸以百分比表示。資料來源：Bloomberg；本研究計算（\texttt{main\_1W} 回測，99\% 信心水準）。
+    \end{minipage}
+\end{figure}
+
+% ===============================
+\section{臺灣央行干預}
+\label{sec:ev_twd}
+% ===============================
+
+與 Liberation Day 的事前可預期性對比，2025 年 4–5 月臺幣兌美元短期內升值逾 8\%，此無預警的央行干預行動引發了匯市微觀結構的瞬間扭曲。由於選擇權市場缺乏事前定價管道，此事件對依賴前瞻特徵的競爭模型構成嚴峻挑戰。圖~\ref{fig:twd_var} 比較了 QR-IM 與 HS 模型在干預事件前後的 1\% VaR 邊界動態。
+
+% 圖 7-2：USD/TWD 央行干預前後 VaR 邊界與實際報酬
+\begin{figure}[htbp]
+    \centering
+    \caption{2025 年 5 月台灣央行干預前後 USD/TWD 1\% VaR 預測邊界與實際報酬率比較圖}
+    \label{fig:twd_var}
+    \vspace{3mm}
+    \includegraphics[width=\textwidth]{figures/Figure 7-2.pdf}
+    \vspace{2mm}
+    \begin{minipage}{\textwidth}
+        \fontsize{9pt}{13pt}\selectfont
+        \textit{Note.} 圖例定義同圖~\ref{fig:tariff_var}：實線為 QR-IM 之 1\% VaR 下界，虛線為歷史模擬（HS）基準，星號為衝擊日（5 月 2 日）之實際報酬。垂直虛線標記央行干預日。資料來源：Bloomberg；本研究計算（\texttt{main\_1W} 回測，99\% 信心水準）。
+    \end{minipage}
+\end{figure}
+
+在 5 月 2 日的衝擊日，USD/TWD 單日實際報酬率達 $-3.75\%$，遠超 QR-IM（$-1.43\%$）與 HS（$-0.64\%$）的預測邊界。關鍵在於，兩模型的 VaR 邊界在事件前皆維持低檔，QR-IM 並未釋出預警訊號，其 VaR 僅在衝擊發生後才隨隱含波動率上升而擴大。此現象凸顯了本研究方法論的一項核心邊界條件：QR-IM 的資訊優勢嚴格建立在衝擊能被選擇權市場事前預期的基礎上。對於突發性、未經預告的政策干預，隱含波動率曲面無從定價，導致 QR-IM 與落後指標的歷史模擬法同樣面臨失準。
+
+為進一步驗證干預期間的特徵傳導失效，本研究針對 2025 年央行干預事件窗口的 USD/TWD 日報酬率與 1W RR25 執行單向 Granger 因果性檢定，結果如表~\ref{tab:twd_granger}。
+
+% ───────────────────────────────────────
+\begin{table}[htbp]
+    \centering
+    \linespread{1.2}\selectfont
+    \renewcommand{\arraystretch}{1.2}
+    \fontsize{11pt}{15pt}\selectfont
+    \vspace{3mm}
+    \caption{央行干預事件中 RR25 不 Granger-cause 報酬率的 $F$ 檢定 $p$ 值}
+    \label{tab:twd_granger}
+    \begin{tabular}{cc}
+        \hline
+        \textbf{滯後期（Lag）} & $p$ \textbf{值} \\
+        \hline
+        1 & .566 \\
+        2 & .529 \\
+        3 & .382 \\
+        4 & .221 \\
+        5 & .219 \\
+        \hline
+    \end{tabular}
+    
+    \vspace{3mm}
+    
+    \begin{minipage}{0.28\textwidth}
+        \fontsize{9pt}{13pt}\selectfont
+        \textit{Note.} 所有滯後期的 $p$ 值均大於 .10，無法拒絕虛無假設。
+    \end{minipage}
+\end{table}
+% ──────────────────────────────────────
+
+在落後期 1 至 5 的設定下，$p$ 值均大於 .20，無法拒絕「RR25 不領先影響報酬率」的虛無假設。此結果揭示了因果通道的制度依賴性：在自由浮動匯率制度下，場外選擇權的 RR25 定價能有效前導現貨報酬的尾部動態；但在央行無預警干預期間，機構訂單流主導了現貨定價，削弱了選擇權偏態指標的資訊領先性。此實證發現不僅確立了隱含波動率模型的應用邊界，亦為未來針對市場制度轉換（Regime-switching）引入自適應機制的研究方向提供了明確動機。
